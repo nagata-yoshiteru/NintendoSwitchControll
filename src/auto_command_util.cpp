@@ -8,7 +8,21 @@
 #include "auto_command_util.h"
 
 // ボタンを押してから離すまでの時間
-const uint16_t BUTTON_PUSHING_MSEC = 100;
+const uint16_t BUTTON_PUSHING_MSEC = 60;
+
+// LEDに使うピン
+const uint16_t LED_PIN = 13;
+
+// 長押し時のLED点滅時間間隔
+const uint16_t LED_INTERVAL = 500;
+
+/**
+ * @brief 初期化(13ピンをOUTPUTに設定)
+ */
+void initAutoCommandUtil()
+{
+    pinMode(LED_PIN, OUTPUT);
+}
 
 /**
  * @brief Switchコントローラーのボタンを押す
@@ -21,9 +35,11 @@ void pushButton(Button button, int delay_after_pushing_msec, int loop_num)
 {
     for(int i=0; i<loop_num; i++)
     {
+        digitalWrite(LED_PIN, HIGH);
         SwitchController().pressButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseButton(button);
+        digitalWrite(LED_PIN, LOW);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);
@@ -40,9 +56,11 @@ void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num)
 {
     for(int i=0;i<loop_num;i++)
     {
+        digitalWrite(LED_PIN, HIGH);
         SwitchController().pressHatButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseHatButton();
+        digitalWrite(LED_PIN, LOW);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);
@@ -57,8 +75,28 @@ void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num)
 void pushHatButtonContinuous(Hat button, int pushing_time_msec)
 {
     SwitchController().pressHatButton(button);
-    delay(pushing_time_msec);
-    SwitchController().releaseHatButton();  
+    int remaining_time_msec = pushing_time_msec;
+    while(true)
+    {
+        digitalWrite(LED_PIN, HIGH);
+        if(remaining_time_msec > LED_INTERVAL){
+            remaining_time_msec -= LED_INTERVAL;
+            delay(LED_INTERVAL);
+        }else{
+            delay(remaining_time_msec);
+            break;
+        }
+        digitalWrite(LED_PIN, LOW);
+        if(remaining_time_msec > LED_INTERVAL){
+            remaining_time_msec -= LED_INTERVAL;
+            delay(LED_INTERVAL);
+        }else{
+            delay(remaining_time_msec);
+            break;
+        }
+    }
+    SwitchController().releaseHatButton();
+    digitalWrite(LED_PIN, LOW); 
     delay(BUTTON_PUSHING_MSEC);
 }
 
@@ -74,7 +112,27 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
 void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_msec)
 {
     SwitchController().setStickTiltRatio(lx_per, ly_per, rx_per, ry_per);
-    delay(tilt_time_msec);
+    int remaining_time_msec = tilt_time_msec;
+    while(true)
+    {
+        digitalWrite(LED_PIN, HIGH);
+        if(remaining_time_msec > LED_INTERVAL){
+            remaining_time_msec -= LED_INTERVAL;
+            delay(LED_INTERVAL);
+        }else{
+            delay(remaining_time_msec);
+            break;
+        }
+        digitalWrite(LED_PIN, LOW);
+        if(remaining_time_msec > LED_INTERVAL){
+            remaining_time_msec -= LED_INTERVAL;
+            delay(LED_INTERVAL);
+        }else{
+            delay(remaining_time_msec);
+            break;
+        }
+    }
     SwitchController().setStickTiltRatio(0, 0, 0, 0);
+    digitalWrite(LED_PIN, LOW); 
     delay(BUTTON_PUSHING_MSEC);
 }

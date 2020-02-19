@@ -110,6 +110,7 @@ void execHatchingSequence(){
 }
 
 void setup(){
+    initAutoCommandUtil();
     pushButton(Button::B, 500, 5);
     // 初めの卵が出現するまで走り回る
     moveToInitialPlayerPosition();

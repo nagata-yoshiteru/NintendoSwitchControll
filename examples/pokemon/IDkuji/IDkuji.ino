@@ -10,6 +10,7 @@
 int day_count = 1;
 void setup()
 {
+  initAutoCommandUtil();
   pushButton(Button::B, 100, 10);
 }
 void ID()
