@@ -92,6 +92,7 @@ void execRaidBattleSequence(){
 }
 
 void setup(){
+    initAutoCommandUtil();
     pushButton(Button::B, 500, 5);
 }
 

@@ -43,6 +43,7 @@ void execWattGainSequence()
 
 // ワット回収済みのねがいのかたまりを投げ入れた巣穴の前からスタート
 void setup(){
+    initAutoCommandUtil();
     pushButton(Button::B, 500, 4);  // 最初の数回の入力はswitchが認識しない場合があるので、無駄打ちをしておく
     pushButton(Button::A, 1000);
 }

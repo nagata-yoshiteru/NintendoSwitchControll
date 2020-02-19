@@ -2,6 +2,7 @@
 
 #pragma once
 
+void initAutoCommandUtil();
 void pushButton(Button button, int delay_after_pushing_msec, int loop_num=1);
 void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num=1);
 void pushHatButtonContinuous(Hat button, int pushing_time_msec);

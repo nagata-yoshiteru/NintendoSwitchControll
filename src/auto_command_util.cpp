@@ -8,7 +8,18 @@
 #include "auto_command_util.h"
 
 // ボタンを押してから離すまでの時間
-const uint16_t BUTTON_PUSHING_MSEC = 100;
+const uint16_t BUTTON_PUSHING_MSEC = 60;
+
+// LEDに使うピン
+const uint16_t LED_PIN = 13;
+
+/**
+ * @brief 初期化(13ピンをOUTPUTに設定)
+ */
+void initAutoCommandUtil()
+{
+    pinMode(LED_PIN, OUTPUT);
+}
 
 /**
  * @brief Switchコントローラーのボタンを押す
@@ -21,9 +32,11 @@ void pushButton(Button button, int delay_after_pushing_msec, int loop_num)
 {
     for(int i=0; i<loop_num; i++)
     {
+        digitalWrite(LED_PIN, HIGH);
         SwitchController().pressButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseButton(button);
+        digitalWrite(LED_PIN, LOW);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);
@@ -40,9 +53,11 @@ void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num)
 {
     for(int i=0;i<loop_num;i++)
     {
+        digitalWrite(LED_PIN, HIGH);
         SwitchController().pressHatButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseHatButton();
+        digitalWrite(LED_PIN, LOW);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);

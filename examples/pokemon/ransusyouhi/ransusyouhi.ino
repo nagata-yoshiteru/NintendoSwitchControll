@@ -12,6 +12,7 @@ int day_count = 0;
 #define GOAL 100 //消費する日数を入力
 void setup()
 {
+  initAutoCommandUtil();
   pushButton(Button::B, 100, 10);
   // ホーム画面 > 設定
   pushButton(Button::HOME, 500);

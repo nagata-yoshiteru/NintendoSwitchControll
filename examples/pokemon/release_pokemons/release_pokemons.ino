@@ -27,6 +27,7 @@ void release_pokemon(){
 }
 
 void setup(){
+    initAutoCommandUtil();
     pushButton(Button::B, 500, 5);
     open_box();
     for(int release_poke_num = 0; release_poke_num < 30; release_poke_num++){
