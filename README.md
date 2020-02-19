@@ -1,45 +1,50 @@
 # NintendoSwitchController
 
-Nintendo SWitchをArduino Leonardoを使って制御するArduinoのライブラリーです。  
-ライブラリー内の関数を組み合わせるだけで、様々な作業を自動化するArduinoのスケッチを作成することができます。  
-Leonardoだけで完結しているため、追加の電子部品やはんだ付け等が不要で、Switchに接続するだけで実行することができるため、短時間で導入することができます。  
+Nintendo Switch を Arduino Leonardo を使って制御する Arduino のライブラリーです。  
+ライブラリー内の関数を組み合わせるだけで、様々な作業を自動化する Arduino のスケッチを作成することができます。  
+Leonardo だけで完結しているため、追加の電子部品やはんだ付け等が不要で、Switch に接続するだけで実行することができるため、短時間で導入することができます。  
 サンプルとしてライブラリ内にポケモンの孵化やワット稼ぎ、レイドバトルを自動化するスケッチを含んでいます。
 
 ## 必要なもの
 **ハードウェア**
-- Arduino Leonardo
-- Arduino LeonardoとSwicthを接続するUSBケーブル
+- Arduino Leonardo (または ATmega32u4 搭載互換ボード)
+- Arduino Leonardo と Swicth を接続する USB ケーブルまたは以下のセット
+    - Micro-B オス to A オス
+    - A メス to C の変換
 
 **ソフトウェア**
 - Arduino IDE
+- 互換ボードの場合はそのドライバ
 
 ## 使い方
 ### 環境設定
 **ライブラリーのインストール**  
-Arduinoのライブラリのあるディレクトリ(/Users/{username}/Documents/Arduino/libraries/ など)に、このレポジトリをcloneする/ダウンロードして展開する。
+Arduino のライブラリのあるディレクトリ(`/Users/{username}/Documents/Arduino/libraries/` など)に、このレポジトリをクローン or ダウンロードして展開する。
+(Windows では、`C:\Program Files (x86)\Arduino\libraries\` など)
 
 **Arduino LeonardoのデバイスIDを書き換える**  
-hardware/arduino/avr/boards.txt内のleonardoのvidとpidを設定している個所を書き換える。
+`hardware/arduino/avr/boards.txt` 内の Leonardo の `vid` と `pid` を設定している個所を書き換える。
 ~~~
 leonardo.vid=0x0f0d
 leonardo.pid=0x0092
 ~~~
-※ 複数ある場合は相当する箇所を全て書き換える  
-※ 見つからない場合はArduino IDEのファイル>スケッチ例>SPIから適当なスケッチを開き、スケッチ>スケッチの場所を開くで開いたディレクトリから遡っていくと、boards.txtがある
+※ 複数ある場合は相当する箇所を全て書き換える (`vid.0` や `vid.1` など)
+※ 互換ボードの場合はそのボードの `vid` と `pid` を編集する
+※ 見つからない場合は Arduino IDE の `ファイル` > `スケッチ例` > `SPI` から適当なスケッチを開き、スケッチ>スケッチの場所を開くで開いたディレクトリから遡っていくと、`boards.txt` がある
 
 ### 入力
 **サンプルスケッチを書き込む**  
-サンプルスケッチを開き、ArduinoをPCに繋いで、Arduino IDE経由で書き込む
+サンプルスケッチを開き、Leonardo を PC に繋いで、Arduino IDE 経由で書き込む
 
 **Switchに接続する**  
-SwicthのUSBポートにUSBケーブルを使ってLeonardoを接続する。  
-接続して数回の入力の後、入力を受け付け始める。  
-Switchをドックに刺した状態で、ドックのUSBポートにLeonardoを接続する方法でも動かすことができる。
+Swicth の USB ポートに USB ケーブルを使って Leonardo を接続する。  
+接続して数回の入力の後、入力を受け付け始める。 
+Switch をドックに刺した状態で、ドックの USB ポートに Leonardo を接続する方法でも動かすことができる。
 
 ## サンプルスケッチの説明
 
 ### 自動孵化(auto_hatching.ino)
-育て屋から卵を回収→孵化→ボックスに預ける→ボックスを移動する、を繰り返すスケッチ  
+育て屋から卵を回収 → 孵化 → ボックスに預ける → ボックスを移動する、を繰り返すスケッチ  
 ボックスに空きがある限り、ポケモンを孵化し続ける
 
 初期条件は以下の通り
@@ -61,21 +66,22 @@ Switchをドックに刺した状態で、ドックのUSBポートにLeonardoを
 巣穴からワットを回収し続けるスケッチ
 
 初期条件は以下の通り
-1. 願いのかたまりを投げ入れた巣穴の前にいること
+1. ねがいのかたまりを投げ入れた巣穴の前にいること
 2. 巣穴のワットは回収済みであること
 
 ### 自動レイドバトル(auto_raid_battle.ino)
-レイドバトル→ポケモンを捕獲→ボックスに預ける→願いの塊を投げ入れるを繰り返すスケッチ
+レイドバトル → ポケモンを捕獲 → ボックスに預ける → ねがいのかたまりを投げ入れる を繰り返すスケッチ
 ボックスに空きがある限り、レイドバトルを続ける
 
 初期条件は以下の通り
-1. 願いの塊を投げ入れた巣穴の前にいること
+1. ねがいのかたまりを投げ入れた巣穴の前にいること
 2. 手持ちが1体のみのこと
 3. Aボタン連打でレイドバトルで勝てるようにすること
 4. Xボタンを押したときに「ポケモン」が左上の一つ右の場所にあること
 5. ボックスが空のこと
-6. 願いの塊を大量に持っていること
+6. ねがいのかたまりを大量に持っていること
 
 ## 参考
 [【ポケモン剣盾】全自動で卵を孵化させる装置](https://www.youtube.com/watch?v=oXnQt_Mbyzk)  
 [Arduinoでポケモン剣盾自動化してみた ~自動ワット稼ぎ編~](https://qiita.com/sobassy/items/cb707e50f2f27a851886)
+[ポケモン剣盾の孵化作業をArduinoで完全自動化する](https://qiita.com/interimadd/items/05a81677d177d5a0af70)
