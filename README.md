@@ -18,11 +18,11 @@ Leonardo だけで完結しているため、追加の電子部品やはんだ�
 
 ## 使い方
 ### 環境設定
-**ライブラリーのインストール**  
+**ライブラリのインストール**  
 Arduino のライブラリのあるディレクトリ(`/Users/{username}/Documents/Arduino/libraries/` など)に、このレポジトリをクローン or ダウンロードして展開する。
 (Windows では、`C:\Program Files (x86)\Arduino\libraries\` など)
 
-**Arduino LeonardoのデバイスIDを書き換える**  
+**Arduino Leonardo のデバイス ID を書き換える**  
 `hardware/arduino/avr/boards.txt` 内の Leonardo の `vid` と `pid` を設定している個所を書き換える。
 ~~~
 leonardo.vid=0x0f0d
@@ -36,14 +36,14 @@ leonardo.pid=0x0092
 **サンプルスケッチを書き込む**  
 サンプルスケッチを開き、Leonardo を PC に繋いで、Arduino IDE 経由で書き込む
 
-**Switchに接続する**  
+**Switch に接続する**  
 Swicth の USB ポートに USB ケーブルを使って Leonardo を接続する。  
 接続して数回の入力の後、入力を受け付け始める。 
 Switch をドックに刺した状態で、ドックの USB ポートに Leonardo を接続する方法でも動かすことができる。
 
 ## サンプルスケッチの説明
 
-### 自動孵化(auto_hatching.ino)
+### 自動孵化 `auto_hatching.ino`
 育て屋から卵を回収 → 孵化 → ボックスに預ける → ボックスを移動する、を繰り返すスケッチ  
 ボックスに空きがある限り、ポケモンを孵化し続ける
 
@@ -55,21 +55,21 @@ Switch をドックに刺した状態で、ドックの USB ポートに Leonard
 5. ボックスが空のこと
 6. 育て屋にポケモンを預けていること
 
-### 自動ポケモン逃がし(release_pokemons.ino)
+### 自動ポケモン逃がし `release_pokemons.ino`
 1ボックス分のポケモンを全て逃がすスケッチ
 
 初期条件は以下の通り
 1. メニューを開いていないこと
 2. Xボタンを押したときに「ポケモン」が左上から1つ右の場所にあること
 
-### 自動ワット稼ぎ(auto_gain_watt.ino)
+### 自動ワット稼ぎ `auto_gain_watt.ino`
 巣穴からワットを回収し続けるスケッチ
 
 初期条件は以下の通り
 1. ねがいのかたまりを投げ入れた巣穴の前にいること
 2. 巣穴のワットは回収済みであること
 
-### 自動レイドバトル(auto_raid_battle.ino)
+### 自動レイドバトル `auto_raid_battle.ino`
 レイドバトル → ポケモンを捕獲 → ボックスに預ける → ねがいのかたまりを投げ入れる を繰り返すスケッチ
 ボックスに空きがある限り、レイドバトルを続ける
 
@@ -83,5 +83,5 @@ Switch をドックに刺した状態で、ドックの USB ポートに Leonard
 
 ## 参考
 [【ポケモン剣盾】全自動で卵を孵化させる装置](https://www.youtube.com/watch?v=oXnQt_Mbyzk)  
-[Arduinoでポケモン剣盾自動化してみた ~自動ワット稼ぎ編~](https://qiita.com/sobassy/items/cb707e50f2f27a851886)
+[Arduinoでポケモン剣盾自動化してみた ~自動ワット稼ぎ編~](https://qiita.com/sobassy/items/cb707e50f2f27a851886)  
 [ポケモン剣盾の孵化作業をArduinoで完全自動化する](https://qiita.com/interimadd/items/05a81677d177d5a0af70)
