@@ -11,7 +11,7 @@
 */
 #include <auto_command_util.h>
 
-const int TIME_TO_HATCHING_SEC = 165;
+const int TIME_TO_HATCHING_SEC = 135;
 
 // LEDに使うピン
 const uint16_t LED_PIN = 13;
@@ -30,8 +30,8 @@ void moveToInitialPlayerPosition()
 {
   pushButton(Button::X, 1000);
   pushHatButtonContinuous(Hat::LEFT_UP, 1000);
-  pushButton(Button::A, 2300);
-  pushButton(Button::A, 1100, 2);
+  pushButton(Button::A, 2400);
+  pushButton(Button::A, 1300, 2);
   delay(2000);
 }
 
@@ -178,7 +178,7 @@ void showNum(int num, int outputBits)
     digitalWrite(LED_PIN, LOW);
     delay(200 - 160 * j);
   }
-  delay(200);
+  delay(400);
 }
 
 // mode select
@@ -191,21 +191,22 @@ void setMode()
 void setup()
 {
   initAutoCommandUtil();
-  pushButton(Button::B, 1000, 1);
+  pushButton(Button::B, 300, 3);
   setMode();
-  delay(1000);
-  pushButton(Button::B, 500, 3);
+  pushButton(Button::B, 300, 3);
+  delay(500);
 
   // 初めの卵が出現するまで走り回る
   switch (mode)
   {
-    case 0:
+    case 0: // A連打
       break;
-    case 1:
+    case 1: // 自動孵化(全自動)
       moveToInitialPlayerPosition();
       runAround(TIME_TO_HATCHING_SEC / 3);
       break;
-    case 2:
+    case 2: // 自動孵化(ループのみ)
+      moveToInitialPlayerPosition();
       break;
     case 3:
       break;
@@ -225,6 +226,7 @@ void loop()
       execHatchingSequence();
       break;
     case 2:
+      runAround(30);
       break;
     case 3:
       break;
