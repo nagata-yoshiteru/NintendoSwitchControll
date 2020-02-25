@@ -25,6 +25,12 @@ const uint16_t BTN_IN2_PIN = 11;
 const uint16_t MODE_BITS = 3;
 int mode = 0;
 
+// レイドバトルが終わるまでの時間
+const int BATTLE_FINISH_SEC = 200;
+
+// 日付変更用
+int day_count = 1;
+
 // 空飛ぶタクシーでハシノマはらっぱに移動
 void moveToInitialPlayerPosition()
 {
@@ -132,6 +138,160 @@ void execHatchingSequence()
   moveToNextBox();
 }
 
+// ワットを回収するシーケンス
+void execWattGainSequence()
+{
+    // 募集開始
+    pushButton(Button::A, 3000);
+    // ホーム画面 > 設定
+    pushButton(Button::HOME, 1000);
+    pushHatButton(Hat::DOWN, 100);
+    pushHatButton(Hat::RIGHT, 100, 4);
+    pushButton(Button::A, 1000);
+    // 設定 > 本体 > 日付と時刻
+    pushHatButtonContinuous(Hat::DOWN, 2000);
+    pushHatButton(Hat::RIGHT, 100);
+    pushHatButton(Hat::DOWN, 100, 4);
+    pushButton(Button::A, 500);
+    // 日付と時刻 > 現在の日付と時刻
+    pushHatButton(Hat::DOWN, 100, 2);
+    pushButton(Button::A, 500);
+    pushHatButton(Hat::RIGHT, 100, 2);
+    pushHatButton(Hat::UP, 100);
+    pushHatButtonContinuous(Hat::RIGHT, 1000);
+    pushButton(Button::A, 500);
+    // ホーム画面 > ゲーム画面
+    pushButton(Button::HOME, 1000);
+    pushButton(Button::A, 500);
+    // レイド募集中止
+    pushButton(Button::B, 1000);
+    pushButton(Button::A, 4000);
+    // ワット回収
+    pushButton(Button::A, 1000);
+    pushButton(Button::B, 1000);
+    pushButton(Button::A, 1000);
+}
+
+// 巣穴の前からひとりレイドを始め、レイドポケモンを倒し、捕まえる
+void startRaidBattle(){
+    // ひとりではじめる
+    pushButton(Button::A, 1500);
+    pushHatButton(Hat::DOWN, 500);
+    // レイドバトル中はA連打
+    for(int i=0; i<BATTLE_FINISH_SEC; i++){
+        pushButton(Button::A, 500, 2);
+    }
+}
+
+// レイドバトル後もしばらく続くAボタン連打の後の画面から、
+// 巣穴の前の最初のポジションに戻す
+void resetStateRaidBattle(){
+    tiltJoystick(0,0,0,0,100);
+    pushButton(Button::B, 1000, 4);
+    delay(1000);
+    pushButton(Button::A, 1000, 2);
+    pushButton(Button::B, 1000, 3);
+}
+
+// 捕獲した手持ちのポケモンをボックスに預ける
+// box_line : 何列目にポケモンを預けるか
+void sendCapturePokemonToBox(int box_line)
+{
+    // ボックスを開く
+    pushButton(Button::X, 1000);
+    pushHatButtonContinuous(Hat::LEFT_UP, 1000);
+    pushHatButton(Hat::RIGHT, 500);
+    pushButton(Button::A, 2000);
+    pushButton(Button::R, 2000);
+    // 手持ちの捕獲したポケモンを範囲選択
+    pushHatButton(Hat::LEFT, 500);
+    pushHatButton(Hat::DOWN, 500);
+    pushButton(Button::Y, 500, 2);
+    pushButton(Button::A, 500);
+    pushHatButtonContinuous(Hat::DOWN, 2000);
+    pushButton(Button::A, 500);
+    // ボックスに移動させる
+    pushHatButton(Hat::RIGHT, 500, box_line+1);
+    pushHatButton(Hat::UP, 500);
+    pushButton(Button::A, 500);
+    // ボックスを閉じる
+    pushButton(Button::B, 1500, 3);
+}
+
+// レイドバトルをし、ポケモンを捕まえ、ボックスに預けるを繰り返し、
+// ボックスが一杯になったら次のボックスへ移動する
+void execRaidBattleSequence(){
+    for(int send_line=0; send_line<6; send_line++){
+        // 手持ちが一杯になるまでレイドバトルを行う
+        for(int i=0; i<5; i++){
+            startRaidBattle();
+            resetStateRaidBattle();
+        }
+        // 捕まえたポケモンを全て預ける
+        sendCapturePokemonToBox(send_line);
+    }
+    // ボックスが一杯になったところでボックスを移動する
+    moveToNextBox();
+}
+
+// IDくじ
+void ID()
+{
+  //ロトミ起動 > IDくじ
+  pushButton(Button::A, 300, 2);
+  pushHatButton(Hat::DOWN, 150);
+  pushButton(Button::A, 30, 40);
+  pushButton(Button::B, 30, 125);
+  // ホーム画面 > 設定
+  pushButton(Button::HOME, 500);
+  pushHatButton(Hat::DOWN, 30);
+  pushHatButton(Hat::RIGHT, 30, 4);
+  pushButton(Button::A, 300);
+  // 設定 > 本体 > 日付と時刻
+  pushHatButtonContinuous(Hat::DOWN, 2000);
+  pushHatButton(Hat::RIGHT, 100);
+  pushHatButton(Hat::DOWN, 30, 5);
+  pushButton(Button::A, 100);
+  // 日付と時刻 > 現在の日付と時刻
+  pushHatButton(Hat::DOWN, 30, 3);
+}
+
+
+void day1day30()
+{
+  pushButton(Button::A, 100);
+  pushHatButton(Hat::RIGHT, 30, 2);
+  pushHatButton(Hat::UP, 30);
+  pushHatButton(Hat::RIGHT, 30, 3);
+  pushButton(Button::A, 30);
+}
+void day31day1()
+{
+  day1day30();
+  pushButton(Button::A, 200);
+  pushHatButton(Hat::LEFT, 30, 3);
+  pushHatButton(Hat::UP, 30);
+  pushHatButton(Hat::RIGHT, 30, 3);
+  pushButton(Button::A, 30);
+}
+
+int changeDate()
+{
+  if (day_count == 31) {
+    day31day1();
+    return 2;
+  }
+  else {
+    day1day30();
+    return ++day_count;
+  }
+}
+
+void ID2()
+{ // ホーム画面 > ゲーム画面
+  pushButton(Button::HOME, 1000, 2);
+}
+
 // get button input
 int getButton()
 {
@@ -208,7 +368,12 @@ void setup()
     case 2: // 自動孵化(ループのみ)
       moveToInitialPlayerPosition();
       break;
-    case 3:
+    case 3: // 自動ワット稼ぎ
+      pushButton(Button::A, 1000);
+      break;
+    case 4: // 自動レイド
+      break;
+    case 5: // 自動IDくじ
       break;
     default:
       break;
@@ -220,7 +385,7 @@ void loop()
   switch (mode)
   {
     case 0:
-      pushButton(Button::A, 20, 10000);
+      pushButton(Button::A, 30, 10000);
       break;
     case 1:
       execHatchingSequence();
@@ -229,6 +394,15 @@ void loop()
       runAround(30);
       break;
     case 3:
+      execWattGainSequence();
+      break;
+    case 4:
+      execRaidBattleSequence();
+      break;
+    case 5:
+      ID();
+      changeDate();
+      ID2();
       break;
     default:
       break;
