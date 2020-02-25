@@ -8,7 +8,7 @@
 #include "auto_command_util.h"
 
 // ボタンを押してから離すまでの時間
-const uint16_t BUTTON_PUSHING_MSEC = 60;
+const uint16_t BUTTON_PUSHING_MSEC = 30;
 
 // LEDに使うピン
 const uint16_t LED_PIN = 13;
