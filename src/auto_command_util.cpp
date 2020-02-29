@@ -66,12 +66,42 @@ void buttonLED(Button button, int control)
             blueLED(control);
             greenLED(control);
             break;
+        case Button::L:
+            blueLED(control);
+            redLED(control ? 127 : 0);
+            break;
+        case Button::R:
+            greenLED(control);
+            redLED(control ? 127 : 0);
+            break;
+        case Button::ZL:
+            blueLED(control);
+            redLED(control ? 255 : 0);
+            break;
+        case Button::ZR:
+            greenLED(control);
+            redLED(control ? 255 : 0);
+            break;
         default:
             whiteLED(control ? 255 : 0);
             break;
     }
 }
 
+
+/**
+ * @brief Switchコントローラーのボタンを押すときのLED操作
+ * 
+ * @param hat 押すボタン
+ * @param control 押す(=1)か離す(=0)か
+ */
+void buttonLED(Hat hat, int control)
+{
+    whiteLED(control ? 127 : 0);
+    blueLED((hat % 2) & control);
+    greenLED(((hat >> 1) % 2) & control);
+    redLED(((hat >> 2) % 2) & control);
+}
 
 /**
  * @brief Switchコントローラーのボタンを押す
@@ -105,11 +135,11 @@ void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num)
 {
     for(int i=0;i<loop_num;i++)
     {
-        digitalWrite(LED_RED_PIN, HIGH);
+        buttonHatLED(button, 1);
         SwitchController().pressHatButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseHatButton();
-        digitalWrite(LED_RED_PIN, LOW);
+        buttonHatLED(button, 1);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);

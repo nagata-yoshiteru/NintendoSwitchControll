@@ -384,7 +384,7 @@ void setMode()
 
 void setup()
 {
-  initLED();
+  initAutoCommandUtil();
   setMode();
   pushButton(Button::B, 300, 3);
   delay(500);
@@ -409,6 +409,8 @@ void setup()
     case 5: // 自動IDくじ
       break;
     case 6: // 自動IDくじ・掘り出し物市・マニア
+      break;
+    case 7:
       break;
     default:
       break;
@@ -444,6 +446,16 @@ void loop()
       changeDate();
       ID2();
       break;
+    case 7:
+      pushHatButton(Hat::UP, 500);
+      pushHatButton(Hat::UP_RIGHT, 500);
+      pushHatButton(Hat::RIGHT, 500);
+      pushHatButton(Hat::RIGHT_DOWN, 500);
+      pushHatButton(Hat::DOWN, 500);
+      pushHatButton(Hat::DOWN_LEFT, 500);
+      pushHatButton(Hat::LEFT, 500);
+      pushHatButton(Hat::LEFT_UP, 500);
+      pushHatButton(Hat::CENTER, 500);
     default:
       break;
   }
