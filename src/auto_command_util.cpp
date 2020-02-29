@@ -90,12 +90,12 @@ void buttonLED(Button button, int control)
 
 
 /**
- * @brief Switchコントローラーのボタンを押すときのLED操作
+ * @brief Switchコントローラーのハットボタンを押すときのLED操作
  * 
  * @param hat 押すボタン
  * @param control 押す(=1)か離す(=0)か
  */
-void buttonLED(Hat hat, int control)
+void buttonHatLED(Hat hat, int control)
 {
     whiteLED(control ? 127 : 0);
     blueLED((hat % 2) & control);
