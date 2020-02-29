@@ -28,7 +28,7 @@ void initAutoCommandUtil(){
   blueLED(1);
   greenLED(1);
   // 初期 B 3連打
-  pushButton(Button::B, 300, 3);
+  pushButton(Button::B, 200, 3);
   // 全点灯
   redLED(255);
   whiteLED(255);

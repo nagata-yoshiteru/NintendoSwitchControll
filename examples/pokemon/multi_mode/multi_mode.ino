@@ -19,7 +19,7 @@ const uint16_t BTN_IN1_PIN = 7;
 const uint16_t BTN_IN2_PIN = 11;
 
 // mode
-const uint16_t MODE_BITS = 3;
+const uint16_t MODE_BITS = 4;
 int mode = 0;
 
 // レイドバトルが終わるまでの時間
@@ -359,9 +359,9 @@ int getInput(int inputBits)
 // show num
 void showNum(int num, int outputBits)
 {
-  delay(200);
+  delay(100);
   whiteLED(127);
-  delay(200);
+  delay(100);
   for (int i = outputBits; i > 0; i--)
   {
     int j = (num >> (i - 1)) % 2;
@@ -370,9 +370,9 @@ void showNum(int num, int outputBits)
     if (j == 1) blueLED(0); else greenLED(0);
     delay(100);
   }
-  delay(200);
+  delay(100);
   whiteLED(0);
-  delay(200);
+  delay(100);
 }
 
 // mode select
@@ -382,12 +382,15 @@ void setMode()
   showNum(mode, MODE_BITS);
 }
 
+// reset
+void(* resetFunc) (void) = 0; 
+
 void setup()
 {
   initAutoCommandUtil();
   setMode();
-  pushButton(Button::B, 300, 3);
-  delay(500);
+  pushButton(Button::B, 200, 3);
+  delay(400);
 
   // 初めの卵が出現するまで走り回る
   switch (mode)
@@ -412,7 +415,24 @@ void setup()
       break;
     case 7:
       break;
+    case 8:
+      break;
+    case 9:
+      break;
+    case 10:
+      break;
+    case 11:
+      break;
+    case 12:
+      break;
+    case 13:
+      break;
+    case 14:
+      break;
+    case 15:
+      break;
     default:
+      resetFunc();  //call reset
       break;
   }
 }
@@ -446,7 +466,19 @@ void loop()
       changeDate();
       ID2();
       break;
-    case 7:
+    case 15:
+      pushButton(Button::A, 500);
+      pushButton(Button::B, 500);
+      pushButton(Button::X, 500);
+      pushButton(Button::Y, 500);
+      pushButton(Button::L, 500);
+      pushButton(Button::R, 500);
+      pushButton(Button::ZL, 500);
+      pushButton(Button::ZR, 500);
+      pushButton(Button::PLUS, 500);
+      pushButton(Button::MINUS, 500);
+      pushButton(Button::LCLICK, 500);
+      pushButton(Button::RCLICK, 500);
       pushHatButton(Hat::UP, 500);
       pushHatButton(Hat::UP_RIGHT, 500);
       pushHatButton(Hat::RIGHT, 500);
@@ -456,7 +488,24 @@ void loop()
       pushHatButton(Hat::LEFT, 500);
       pushHatButton(Hat::LEFT_UP, 500);
       pushHatButton(Hat::CENTER, 500);
+      pushHatButtonContinuous(Hat::UP, 2000);
+      pushHatButtonContinuous(Hat::UP_RIGHT, 2000);
+      pushHatButtonContinuous(Hat::RIGHT, 2000);
+      pushHatButtonContinuous(Hat::RIGHT_DOWN, 2000);
+      pushHatButtonContinuous(Hat::DOWN, 2000);
+      pushHatButtonContinuous(Hat::DOWN_LEFT, 2000);
+      pushHatButtonContinuous(Hat::LEFT, 2000);
+      pushHatButtonContinuous(Hat::LEFT_UP, 2000);
+      pushHatButtonContinuous(Hat::CENTER, 2000);
+      tiltJoystick(100, 0, 0, 0, 2000);
+      tiltJoystick(0, 100, 0, 0, 2000);
+      tiltJoystick(0, 0, 100, 0, 2000);
+      tiltJoystick(0, 0, 0, 100, 2000);
+      pushButton(Button::HOME, 500);
+      pushButton(Button::CAPTURE, 500);
+      resetFunc();  //call reset
     default:
+      resetFunc();  //call reset
       break;
   }
 }
