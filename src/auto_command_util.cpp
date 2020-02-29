@@ -8,21 +8,70 @@
 #include "auto_command_util.h"
 
 // ボタンを押してから離すまでの時間
-const uint16_t BUTTON_PUSHING_MSEC = 60;
-
-// LEDに使うピン
-const uint16_t LED_PIN = 13;
+const uint16_t BUTTON_PUSHING_MSEC = 50;
 
 // 長押し時のLED点滅時間間隔
 const uint16_t LED_INTERVAL = 500;
 
 /**
- * @brief 初期化(13ピンをOUTPUTに設定)
+ * @brief 初期化(全LEDのセットアップ/点灯/初期 B 3連打)
  */
-void initAutoCommandUtil()
-{
-    pinMode(LED_PIN, OUTPUT);
+void initAutoCommandUtil(){
+  // ピンを初期化
+  pinMode(A2, OUTPUT); // BLUE/GREEN Shared GND
+  digitalWrite(A2, LOW);
+  pinMode(LED_RED_PIN, OUTPUT);
+  pinMode(LED_WHITE_PIN, OUTPUT);
+  // 全点灯
+  redLED(255);
+  whiteLED(255);
+  blueLED(1);
+  greenLED(1);
+  // 初期 B 3連打
+  pushButton(Button::B, 300, 3);
+  // 全点灯
+  redLED(255);
+  whiteLED(255);
+  blueLED(1);
+  greenLED(1);
+  // 0.5秒待機
+  delay(500);
+  // 全消灯
+  redLED(0);
+  whiteLED(0);
+  blueLED(0);
+  greenLED(0);
 }
+
+/**
+ * @brief Switchコントローラーのボタンを押すときのLED操作
+ * 
+ * @param button 押すボタン
+ * @param control 押す(=1)か離す(=0)か
+ */
+void buttonLED(Button button, int control)
+{
+    switch (button)
+    {
+        case Button::A:
+            redLED(control ? 255 : 0);
+            break;
+        case Button::B:
+            blueLED(control);
+            break;
+        case Button::X:
+            greenLED(control);
+            break;
+        case Button::Y:
+            blueLED(control);
+            greenLED(control);
+            break;
+        default:
+            whiteLED(control ? 255 : 0);
+            break;
+    }
+}
+
 
 /**
  * @brief Switchコントローラーのボタンを押す
@@ -35,11 +84,11 @@ void pushButton(Button button, int delay_after_pushing_msec, int loop_num)
 {
     for(int i=0; i<loop_num; i++)
     {
-        digitalWrite(LED_PIN, HIGH);
+        buttonLED(button, 1);
         SwitchController().pressButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseButton(button);
-        digitalWrite(LED_PIN, LOW);
+        buttonLED(button, 0);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);
@@ -56,11 +105,11 @@ void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num)
 {
     for(int i=0;i<loop_num;i++)
     {
-        digitalWrite(LED_PIN, HIGH);
+        digitalWrite(LED_RED_PIN, HIGH);
         SwitchController().pressHatButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseHatButton();
-        digitalWrite(LED_PIN, LOW);
+        digitalWrite(LED_RED_PIN, LOW);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);
@@ -78,7 +127,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
     int remaining_time_msec = pushing_time_msec;
     while(true)
     {
-        digitalWrite(LED_PIN, HIGH);
+        digitalWrite(LED_RED_PIN, HIGH);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -86,7 +135,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
             delay(remaining_time_msec);
             break;
         }
-        digitalWrite(LED_PIN, LOW);
+        digitalWrite(LED_RED_PIN, LOW);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -96,7 +145,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
         }
     }
     SwitchController().releaseHatButton();
-    digitalWrite(LED_PIN, LOW); 
+    digitalWrite(LED_RED_PIN, LOW); 
     delay(BUTTON_PUSHING_MSEC);
 }
 
@@ -115,7 +164,7 @@ void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_
     int remaining_time_msec = tilt_time_msec;
     while(true)
     {
-        digitalWrite(LED_PIN, HIGH);
+        digitalWrite(LED_RED_PIN, HIGH);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -123,7 +172,7 @@ void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_
             delay(remaining_time_msec);
             break;
         }
-        digitalWrite(LED_PIN, LOW);
+        digitalWrite(LED_RED_PIN, LOW);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -133,6 +182,38 @@ void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_
         }
     }
     SwitchController().setStickTiltRatio(0, 0, 0, 0);
-    digitalWrite(LED_PIN, LOW); 
+    digitalWrite(LED_RED_PIN, LOW); 
     delay(BUTTON_PUSHING_MSEC);
+}
+
+/**
+ * @brief 赤色LEDを操作 (0=OFF ～ 255=ON)
+ */
+void redLED(int brightness){
+  pinMode(LED_RED_PIN, OUTPUT);
+  analogWrite(LED_RED_PIN, brightness < 255 ? brightness : 255);
+}
+
+/**
+ * @brief 白色LEDを操作 (0=OFF ～ 255=ON)
+ */
+void whiteLED(int brightness){
+  pinMode(LED_WHITE_PIN, OUTPUT);
+  analogWrite(LED_WHITE_PIN, brightness < 255 ? brightness : 255);
+}
+
+/**
+ * @brief 青色LEDを操作 (0=OFF/other=ON)
+ */
+void blueLED(int power){
+  pinMode(LED_BLUE_PIN, power == 0 ? OUTPUT : INPUT_PULLUP);
+  if (power == 0) digitalWrite(LED_BLUE_PIN, LOW);
+}
+
+/**
+ * @brief 緑色LEDを操作 (0=OFF/other=ON)
+ */
+void greenLED(int power){
+  pinMode(LED_GREEN_PIN, power == 0 ? OUTPUT : INPUT_PULLUP);
+  if (power == 0) digitalWrite(LED_GREEN_PIN, LOW);
 }

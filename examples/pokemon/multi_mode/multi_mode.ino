@@ -13,9 +13,6 @@
 
 const int TIME_TO_HATCHING_SEC = 135;
 
-// LEDに使うピン
-const uint16_t LED_PIN = 13;
-
 // Buttonに使うピン
 const uint16_t BTN_VCC_PIN = 10;
 const uint16_t BTN_IN1_PIN = 7;
@@ -292,6 +289,31 @@ void ID2()
   pushButton(Button::HOME, 1000, 2);
 }
 
+// IDくじ > マニア
+void moveFromIDToMania()
+{
+
+}
+
+// マニア > 掘り出し物市
+void moveFromManiaToHoridashi()
+{
+
+}
+
+// 掘り出し物市 > マニア
+void moveFromHoridashiToMania()
+{
+
+}
+
+// マニア > IDくじ
+void moveFromManiaToID()
+{
+
+}
+
+
 // get button input
 int getButton()
 {
@@ -303,23 +325,30 @@ int getButton()
 // get num input
 int getInput(int inputBits)
 {
-  int in = 0;
+  int in = 0, b = 0, k = 1;
   pinMode(BTN_VCC_PIN, OUTPUT);
   digitalWrite(BTN_VCC_PIN, LOW);
   pinMode(BTN_IN1_PIN, INPUT_PULLUP);
   pinMode(BTN_IN2_PIN, INPUT_PULLUP);
   for (int i = 0; i < inputBits; i++)
   {
-    int j;
+    int j = -1;
     while ((j = getButton()) == -1){
-      delay(10);
+      delay(2);
+      if (b >= 255) k = -1;
+      if (b <= 0) k = 1;
+      b += k;
+      whiteLED(b);
     }
-    digitalWrite(LED_PIN, HIGH);
-    delay(40 + 160 * j);
-    digitalWrite(LED_PIN, LOW);
+    if (j == 1) blueLED(1); else greenLED(1);
     while (getButton() != -1){
-      delay(10);
+      delay(2);
+      if (b >= 255) k = -1;
+      if (b <= 0) k = 1;
+      b += k;
+      whiteLED(b);
     }
+    if (j == 1) blueLED(0); else greenLED(0);
     in = (in << 1) + j;
   }
   pinMode(BTN_IN1_PIN, OUTPUT);
@@ -330,15 +359,20 @@ int getInput(int inputBits)
 // show num
 void showNum(int num, int outputBits)
 {
+  delay(200);
+  whiteLED(127);
+  delay(200);
   for (int i = outputBits; i > 0; i--)
   {
     int j = (num >> (i - 1)) % 2;
-    digitalWrite(LED_PIN, HIGH);
-    delay(40 + 160 * j);
-    digitalWrite(LED_PIN, LOW);
-    delay(200 - 160 * j);
+    if (j == 1) blueLED(1); else greenLED(1);
+    delay(200);
+    if (j == 1) blueLED(0); else greenLED(0);
+    delay(100);
   }
-  delay(400);
+  delay(200);
+  whiteLED(0);
+  delay(200);
 }
 
 // mode select
@@ -350,8 +384,7 @@ void setMode()
 
 void setup()
 {
-  initAutoCommandUtil();
-  pushButton(Button::B, 300, 3);
+  initLED();
   setMode();
   pushButton(Button::B, 300, 3);
   delay(500);
@@ -374,6 +407,8 @@ void setup()
     case 4: // 自動レイド
       break;
     case 5: // 自動IDくじ
+      break;
+    case 6: // 自動IDくじ・掘り出し物市・マニア
       break;
     default:
       break;
@@ -400,6 +435,11 @@ void loop()
       execRaidBattleSequence();
       break;
     case 5:
+      ID();
+      changeDate();
+      ID2();
+      break;
+    case 6:
       ID();
       changeDate();
       ID2();
