@@ -88,19 +88,31 @@ void buttonLED(Button button, int control)
     }
 }
 
-
 /**
  * @brief Switchコントローラーのハットボタンを押すときのLED操作
  * 
  * @param hat 押すボタン
  * @param control 押す(=1)か離す(=0)か
  */
-void buttonHatLED(Hat hat, int control)
+void hatLED(Hat hat, int control)
 {
     whiteLED(control ? 127 : 0);
     blueLED((hat % 2) & control);
     greenLED(((hat >> 1) % 2) & control);
-    redLED(((hat >> 2) % 2) & (control ? 127 : 0));
+    redLED(((hat >> 2) % 2) & (control ? 255 : 0));
+}
+
+/**
+ * @brief Switchコントローラーのスティックを押すときのLED操作
+ * 
+ * @param hat 押すボタン
+ * @param control 押す(=1)か離す(=0)か
+ */
+void stickLED(int l, int r, int control)
+{
+    whiteLED(control ? 127 : 0);
+    blueLED(l & control);
+    greenLED(r & control);
 }
 
 /**
@@ -135,11 +147,11 @@ void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num)
 {
     for(int i=0;i<loop_num;i++)
     {
-        buttonHatLED(button, 1);
+        hatLED(button, 1);
         SwitchController().pressHatButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseHatButton();
-        buttonHatLED(button, 0);
+        hatLED(button, 0);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);
@@ -157,7 +169,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
     int remaining_time_msec = pushing_time_msec;
     while(true)
     {
-        buttonHatLED(button, 1);
+        hatLED(button, 1);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -165,7 +177,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
             delay(remaining_time_msec);
             break;
         }
-        buttonHatLED(button, 0);
+        whiteLED(255);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -175,7 +187,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
         }
     }
     SwitchController().releaseHatButton();
-    buttonHatLED(button, 0); 
+    hatLED(button, 0); 
     delay(BUTTON_PUSHING_MSEC);
 }
 
@@ -194,7 +206,7 @@ void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_
     int remaining_time_msec = tilt_time_msec;
     while(true)
     {
-        digitalWrite(LED_RED_PIN, HIGH);
+        stickLED(lx_per | ly_per, rx_per | ry_per, 1);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -202,7 +214,7 @@ void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_
             delay(remaining_time_msec);
             break;
         }
-        digitalWrite(LED_RED_PIN, LOW);
+        whiteLED(0);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -212,7 +224,7 @@ void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_
         }
     }
     SwitchController().setStickTiltRatio(0, 0, 0, 0);
-    digitalWrite(LED_RED_PIN, LOW); 
+    stickLED(0, 0, 0); 
     delay(BUTTON_PUSHING_MSEC);
 }
 
