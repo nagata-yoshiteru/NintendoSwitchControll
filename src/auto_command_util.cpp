@@ -206,7 +206,7 @@ void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_
     int remaining_time_msec = tilt_time_msec;
     while(true)
     {
-        stickLED(lx_per | ly_per, rx_per | ry_per, 1);
+        stickLED(lx_per || ly_per, rx_per || ry_per, 1);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
