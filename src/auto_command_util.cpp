@@ -99,7 +99,7 @@ void hatLED(Hat hat, int control)
     whiteLED(control ? 127 : 0);
     blueLED((hat % 2) & control);
     greenLED(((hat >> 1) % 2) & control);
-    redLED((((hat >> 2) % 2) && control) ? 255 : 0));
+    redLED((((hat >> 2) % 2) && control) ? 255 : 0);
 }
 
 /**
