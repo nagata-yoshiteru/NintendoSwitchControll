@@ -100,7 +100,7 @@ void buttonHatLED(Hat hat, int control)
     whiteLED(control ? 127 : 0);
     blueLED((hat % 2) & control);
     greenLED(((hat >> 1) % 2) & control);
-    redLED(((hat >> 2) % 2) & control);
+    redLED(((hat >> 2) % 2) & (control ? 127 : 0));
 }
 
 /**
@@ -139,7 +139,7 @@ void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num)
         SwitchController().pressHatButton(button);
         delay(BUTTON_PUSHING_MSEC);
         SwitchController().releaseHatButton();
-        buttonHatLED(button, 1);
+        buttonHatLED(button, 0);
         delay(delay_after_pushing_msec);
     }
     delay(BUTTON_PUSHING_MSEC);
@@ -157,7 +157,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
     int remaining_time_msec = pushing_time_msec;
     while(true)
     {
-        digitalWrite(LED_RED_PIN, HIGH);
+        buttonHatLED(button, 1);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -165,7 +165,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
             delay(remaining_time_msec);
             break;
         }
-        digitalWrite(LED_RED_PIN, LOW);
+        buttonHatLED(button, 0);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -175,7 +175,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
         }
     }
     SwitchController().releaseHatButton();
-    digitalWrite(LED_RED_PIN, LOW); 
+    buttonHatLED(button, 0); 
     delay(BUTTON_PUSHING_MSEC);
 }
 
