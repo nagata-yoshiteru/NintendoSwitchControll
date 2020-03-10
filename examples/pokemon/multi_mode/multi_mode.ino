@@ -18,6 +18,10 @@ const uint16_t BTN_VCC_PIN = 10;
 const uint16_t BTN_IN1_PIN = 7;
 const uint16_t BTN_IN2_PIN = 11;
 
+// Speakerに使うピン
+const uint16_t SPK_GND_PIN = 12;
+const uint16_t SPK_IN_PIN = 9;
+
 // mode
 const uint16_t MODE_BITS = 4;
 int mode = 0;
@@ -27,6 +31,9 @@ const int BATTLE_FINISH_SEC = 200;
 
 // 日付変更用
 int day_count = 1;
+
+// その他，キャッシュ用変数
+int v0 = 0, v1 = 0, v2 = 0, v3 = 0;
 
 // 空飛ぶタクシーでハシノマはらっぱに移動
 void moveToInitialPlayerPosition()
@@ -135,40 +142,6 @@ void execHatchingSequence()
   moveToNextBox();
 }
 
-// ワットを回収するシーケンス
-void execWattGainSequence()
-{
-    // 募集開始
-    pushButton(Button::A, 3000);
-    // ホーム画面 > 設定
-    pushButton(Button::HOME, 1000);
-    pushHatButton(Hat::DOWN, 100);
-    pushHatButton(Hat::RIGHT, 100, 4);
-    pushButton(Button::A, 1000);
-    // 設定 > 本体 > 日付と時刻
-    pushHatButtonContinuous(Hat::DOWN, 2000);
-    pushHatButton(Hat::RIGHT, 100);
-    pushHatButton(Hat::DOWN, 100, 4);
-    pushButton(Button::A, 500);
-    // 日付と時刻 > 現在の日付と時刻
-    pushHatButton(Hat::DOWN, 100, 2);
-    pushButton(Button::A, 500);
-    pushHatButton(Hat::RIGHT, 100, 2);
-    pushHatButton(Hat::UP, 100);
-    pushHatButtonContinuous(Hat::RIGHT, 1000);
-    pushButton(Button::A, 500);
-    // ホーム画面 > ゲーム画面
-    pushButton(Button::HOME, 1000);
-    pushButton(Button::A, 500);
-    // レイド募集中止
-    pushButton(Button::B, 1000);
-    pushButton(Button::A, 4000);
-    // ワット回収
-    pushButton(Button::A, 1000);
-    pushButton(Button::B, 1000);
-    pushButton(Button::A, 1000);
-}
-
 // 巣穴の前からひとりレイドを始め、レイドポケモンを倒し、捕まえる
 void startRaidBattle(){
     // ひとりではじめる
@@ -231,14 +204,8 @@ void execRaidBattleSequence(){
     moveToNextBox();
 }
 
-// IDくじ
-void ID()
+void goToTimeSetting()
 {
-  //ロトミ起動 > IDくじ
-  pushButton(Button::A, 300, 2);
-  pushHatButton(Hat::DOWN, 150);
-  pushButton(Button::A, 30, 40);
-  pushButton(Button::B, 30, 125);
   // ホーム画面 > 設定
   pushButton(Button::HOME, 500);
   pushHatButton(Hat::DOWN, 30);
@@ -253,6 +220,18 @@ void ID()
   pushHatButton(Hat::DOWN, 30, 3);
 }
 
+// IDくじ
+void ID()
+{
+  //ロトミ起動 > IDくじ
+  pushButton(Button::A, 300, 2);
+  pushHatButton(Hat::DOWN, 150);
+  pushButton(Button::A, 30, 40);
+  pushButton(Button::B, 30, 125);
+  // ホーム画面 > 現在の日付と時刻
+  goToTimeSetting();
+}
+
 
 void day1day30()
 {
@@ -262,10 +241,21 @@ void day1day30()
   pushHatButton(Hat::RIGHT, 30, 3);
   pushButton(Button::A, 30);
 }
+
+void day1day30Multi()
+{
+  pushButton(Button::A, 100);
+  pushHatButton(Hat::LEFT, 30, 3);
+  pushHatButton(Hat::UP, 30);
+  pushHatButton(Hat::RIGHT, 30, 3);
+  pushButton(Button::A, 30);
+}
+
 void day31day1()
 {
   day1day30();
-  pushButton(Button::A, 200);
+  delay(200);
+  pushButton(Button::A, 100);
   pushHatButton(Hat::LEFT, 30, 3);
   pushHatButton(Hat::UP, 30);
   pushHatButton(Hat::RIGHT, 30, 3);
@@ -274,9 +264,10 @@ void day31day1()
 
 int changeDate()
 {
-  if (day_count == 31) {
-    day31day1();
-    return 2;
+  if (day_count == 30) {
+    day31day1(); // 30 -> 31 -> 1
+    day_count = 1;
+    return 1;
   }
   else {
     day1day30();
@@ -287,6 +278,24 @@ int changeDate()
 void ID2()
 { // ホーム画面 > ゲーム画面
   pushButton(Button::HOME, 1000, 2);
+}
+
+// ワットを回収するシーケンス
+void execWattGainSequence()
+{
+    // 募集開始
+    pushButton(Button::A, 3000);
+    // 日付変更
+    goToTimeSetting();
+    day1day30();
+    ID2();
+    // レイド募集中止
+    pushButton(Button::B, 800);
+    pushButton(Button::A, 3400);
+    // ワット回収
+    pushButton(Button::A, 600);
+    pushButton(Button::B, 600);
+    pushButton(Button::B, 600);
 }
 
 // IDくじ > マニア
@@ -313,6 +322,12 @@ void moveFromManiaToID()
 
 }
 
+// 再起動
+void restartApp()
+{
+
+}
+
 
 // get button input
 int getButton()
@@ -334,21 +349,23 @@ int getInput(int inputBits)
   {
     int j = -1;
     while ((j = getButton()) == -1){
-      delay(2);
+      delay(4);
       if (b >= 255) k = -1;
       if (b <= 0) k = 1;
       b += k;
       whiteLED(b);
     }
     if (j == 1) blueLED(1); else greenLED(1);
+    tone(SPK_IN_PIN, 880, j == 1 ? 200 : 50);
     while (getButton() != -1){
-      delay(2);
+      delay(4);
       if (b >= 255) k = -1;
       if (b <= 0) k = 1;
       b += k;
       whiteLED(b);
     }
     if (j == 1) blueLED(0); else greenLED(0);
+    delay(40);
     in = (in << 1) + j;
   }
   pinMode(BTN_IN1_PIN, OUTPUT);
@@ -366,6 +383,7 @@ void showNum(int num, int outputBits)
   {
     int j = (num >> (i - 1)) % 2;
     if (j == 1) blueLED(1); else greenLED(1);
+    tone(SPK_IN_PIN, 880, j == 1 ? 200 : 50);
     delay(200);
     if (j == 1) blueLED(0); else greenLED(0);
     delay(100);
@@ -388,6 +406,9 @@ void(* resetFunc) (void) = 0;
 void setup()
 {
   initAutoCommandUtil();
+  pinMode(SPK_GND_PIN, OUTPUT);
+  digitalWrite(SPK_GND_PIN, LOW);
+  tone(SPK_IN_PIN, 880, 200);
   setMode();
   pushButton(Button::B, 200, 3);
   delay(400);
@@ -413,15 +434,63 @@ void setup()
       break;
     case 6: // 自動IDくじ・掘り出し物市・マニア
       break;
-    case 7:
+    case 7: // 自動日付変更(無限)
+      goToTimeSetting();
+      day1day30();
       break;
     case 8:
       break;
-    case 9:
+    case 9: // 自動ワット稼ぎ(回数指定)
+      v0 = getInput(8);
+      showNum(v0, 8);
+      pushButton(Button::A, 1000);
+      for (v1 = 0; v1 < v0; v1++) {
+        execWattGainSequence();
+      }
       break;
-    case 10:
+    case 10: // 自動日付変更(10日単位回数指定)
+      v0 = getInput(8) * 10;
+      showNum(v0, 12);
+      goToTimeSetting();
+      day1day30();
+      for (v1 = 1; v1 < v0; v1++) {
+        delay(150);
+        day1day30Multi();
+      }
+      ID2();
       break;
     case 11:
+      while (true) {
+        pushButton(Button::A, 1000);
+        execWattGainSequence();
+        execWattGainSequence();
+        execWattGainSequence();
+        tone(SPK_IN_PIN, 1760, 150);
+        delay(200);
+        tone(SPK_IN_PIN, 1760, 150);
+        delay(200);
+        tone(SPK_IN_PIN, 1760, 150);
+        v1 = getInput(1);
+        if (v1 == 0) {
+          pushButton(Button::HOME, 700);
+          pushButton(Button::X, 700);
+          pushButton(Button::A, 100, 30);
+          delay(12500);
+          pushButton(Button::A, 100, 10);
+          delay(7000);
+        }else{
+          pushButton(Button::B, 100, 20);
+          pushButton(Button::X, 700);
+          pushHatButtonContinuous(Hat::LEFT_UP, 1000);
+          pushHatButton(Hat::RIGHT, 500);
+          pushHatButton(Hat::DOWN, 500);
+          pushButton(Button::A, 2000);
+          delay(10000);
+          pushButton(Button::B, 2000);
+          pushButton(Button::A, 2000);
+          break;
+        }
+      }
       break;
     case 12:
       break;
@@ -465,6 +534,11 @@ void loop()
       ID();
       changeDate();
       ID2();
+      break;
+    case 7:
+    case 8:
+      delay(120);
+      day1day30Multi();
       break;
     case 15:
       pushButton(Button::A, 500);
