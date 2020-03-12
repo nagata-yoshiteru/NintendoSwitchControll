@@ -13,6 +13,11 @@ const uint16_t BUTTON_PUSHING_MSEC = 50;
 // 長押し時のLED点滅時間間隔
 const uint16_t LED_INTERVAL = 500;
 
+// 明るさ
+const uint16_t LED_BRIGHTNESS_100 = 127;
+const uint16_t LED_BRIGHTNESS_50 = 63;
+
+
 /**
  * @brief 初期化(全LEDのセットアップ/点灯/初期 B 3連打)
  */
@@ -27,15 +32,15 @@ void initAutoCommandUtil(){
   pinMode(LED_RED_PIN, OUTPUT);
   pinMode(LED_WHITE_PIN, OUTPUT);
   // 全点灯
-  redLED(255);
-  whiteLED(255);
+  redLED(LED_BRIGHTNESS_100);
+  whiteLED(LED_BRIGHTNESS_100);
   blueLED(1);
   greenLED(1);
   // 初期 B 3連打
   pushButton(Button::B, 200, 3);
   // 全点灯
-  redLED(255);
-  whiteLED(255);
+  redLED(LED_BRIGHTNESS_100);
+  whiteLED(LED_BRIGHTNESS_100);
   blueLED(1);
   greenLED(1);
   // 0.5秒待機
@@ -58,7 +63,7 @@ void buttonLED(Button button, int control)
     switch (button)
     {
         case Button::A:
-            redLED(control ? 255 : 0);
+            redLED(control ? LED_BRIGHTNESS_100 : 0);
             break;
         case Button::B:
             blueLED(control);
@@ -72,22 +77,22 @@ void buttonLED(Button button, int control)
             break;
         case Button::L:
             blueLED(control);
-            redLED(control ? 127 : 0);
+            redLED(control ? LED_BRIGHTNESS_50 : 0);
             break;
         case Button::R:
             greenLED(control);
-            redLED(control ? 127 : 0);
+            redLED(control ? LED_BRIGHTNESS_50 : 0);
             break;
         case Button::ZL:
             blueLED(control);
-            redLED(control ? 255 : 0);
+            redLED(control ? LED_BRIGHTNESS_100 : 0);
             break;
         case Button::ZR:
             greenLED(control);
-            redLED(control ? 255 : 0);
+            redLED(control ? LED_BRIGHTNESS_100 : 0);
             break;
         default:
-            whiteLED(control ? 255 : 0);
+            whiteLED(control ? LED_BRIGHTNESS_100 : 0);
             break;
     }
 }
@@ -100,10 +105,10 @@ void buttonLED(Button button, int control)
  */
 void hatLED(Hat hat, int control)
 {
-    whiteLED(control ? 127 : 0);
+    whiteLED(control ? LED_BRIGHTNESS_50 : 0);
     blueLED((hat % 2) & control);
     greenLED(((hat >> 1) % 2) & control);
-    redLED((((hat >> 2) % 2) && control) ? 255 : 0);
+    redLED((((hat >> 2) % 2) && control) ? LED_BRIGHTNESS_100 : 0);
 }
 
 /**
@@ -114,7 +119,7 @@ void hatLED(Hat hat, int control)
  */
 void stickLED(int l, int r, int control)
 {
-    whiteLED(control ? 127 : 0);
+    whiteLED(control ? LED_BRIGHTNESS_50 : 0);
     blueLED(l & control);
     greenLED(r & control);
 }
@@ -181,7 +186,7 @@ void pushHatButtonContinuous(Hat button, int pushing_time_msec)
             delay(remaining_time_msec);
             break;
         }
-        whiteLED(255);
+        whiteLED(LED_BRIGHTNESS_100);
         if(remaining_time_msec > LED_INTERVAL){
             remaining_time_msec -= LED_INTERVAL;
             delay(LED_INTERVAL);
@@ -233,19 +238,19 @@ void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_
 }
 
 /**
- * @brief 赤色LEDを操作 (0=OFF ～ 255=ON)
+ * @brief 赤色LEDを操作 (0=OFF ～ LED_BRIGHTNESS_100=ON)
  */
 void redLED(int brightness){
   pinMode(LED_RED_PIN, OUTPUT);
-  analogWrite(LED_RED_PIN, brightness < 255 ? brightness : 255);
+  analogWrite(LED_RED_PIN, brightness < LED_BRIGHTNESS_100 ? brightness : LED_BRIGHTNESS_100);
 }
 
 /**
- * @brief 白色LEDを操作 (0=OFF ～ 255=ON)
+ * @brief 白色LEDを操作 (0=OFF ～ LED_BRIGHTNESS_100=ON)
  */
 void whiteLED(int brightness){
   pinMode(LED_WHITE_PIN, OUTPUT);
-  analogWrite(LED_WHITE_PIN, brightness < 255 ? brightness : 255);
+  analogWrite(LED_WHITE_PIN, brightness < LED_BRIGHTNESS_100 ? brightness : LED_BRIGHTNESS_100);
 }
 
 /**
