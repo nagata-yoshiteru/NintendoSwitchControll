@@ -14,8 +14,8 @@ const uint16_t BUTTON_PUSHING_MSEC = 50;
 const uint16_t LED_INTERVAL = 500;
 
 // 明るさ
-const uint16_t LED_BRIGHTNESS_100 = 127;
-const uint16_t LED_BRIGHTNESS_50 = 63;
+const uint16_t LED_BRIGHTNESS_100 = 100;
+const uint16_t LED_BRIGHTNESS_50 = 50;
 
 
 /**
