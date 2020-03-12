@@ -14,13 +14,13 @@
 const int TIME_TO_HATCHING_SEC = 135;
 
 // Buttonに使うピン
-const uint16_t BTN_VCC_PIN = 10;
-const uint16_t BTN_IN1_PIN = 7;
-const uint16_t BTN_IN2_PIN = 11;
+const uint16_t BTN_VCC_PIN = A2;
+const uint16_t BTN_IN1_PIN = A0;
+const uint16_t BTN_IN2_PIN = A3;
 
 // Speakerに使うピン
-const uint16_t SPK_GND_PIN = 12;
-const uint16_t SPK_IN_PIN = 9;
+const uint16_t SPK_GND_PIN = 16;
+const uint16_t SPK_IN_PIN = 10;
 
 // mode
 const uint16_t MODE_BITS = 4;
