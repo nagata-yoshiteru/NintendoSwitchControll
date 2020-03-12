@@ -349,7 +349,7 @@ int getInput(int inputBits)
   {
     int j = -1;
     while ((j = getButton()) == -1){
-      delay(4);
+      delay(8);
       if (b >= LED_BRIGHTNESS_100) k = -1;
       if (b <= 0) k = 1;
       b += k;
@@ -358,7 +358,7 @@ int getInput(int inputBits)
     if (j == 1) blueLED(1); else greenLED(1);
     tone(SPK_IN_PIN, 880, j == 1 ? 200 : 50);
     while (getButton() != -1){
-      delay(4);
+      delay(8);
       if (b >= LED_BRIGHTNESS_100) k = -1;
       if (b <= 0) k = 1;
       b += k;
@@ -377,7 +377,7 @@ int getInput(int inputBits)
 void showNum(int num, int outputBits)
 {
   delay(100);
-  whiteLED(127);
+  whiteLED(LED_BRIGHTNESS_50);
   delay(100);
   for (int i = outputBits; i > 0; i--)
   {
