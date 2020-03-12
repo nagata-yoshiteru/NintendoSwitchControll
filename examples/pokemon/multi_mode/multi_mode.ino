@@ -350,7 +350,7 @@ int getInput(int inputBits)
     int j = -1;
     while ((j = getButton()) == -1){
       delay(4);
-      if (b >= 255) k = -1;
+      if (b >= LED_BRIGHTNESS_100) k = -1;
       if (b <= 0) k = 1;
       b += k;
       whiteLED(b);
@@ -359,7 +359,7 @@ int getInput(int inputBits)
     tone(SPK_IN_PIN, 880, j == 1 ? 200 : 50);
     while (getButton() != -1){
       delay(4);
-      if (b >= 255) k = -1;
+      if (b >= LED_BRIGHTNESS_100) k = -1;
       if (b <= 0) k = 1;
       b += k;
       whiteLED(b);

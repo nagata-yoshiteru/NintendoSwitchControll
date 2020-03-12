@@ -11,6 +11,10 @@ const uint16_t LED_RED_GND_PIN = 8;
 const uint16_t LED_GREEN_GND_PIN = 7;
 const uint16_t LED_BLUE_GND_PIN = 4;
 
+// 明るさ
+const uint16_t LED_BRIGHTNESS_100 = 50;
+const uint16_t LED_BRIGHTNESS_50 = 25;
+
 void initAutoCommandUtil();
 void pushButton(Button button, int delay_after_pushing_msec, int loop_num=1);
 void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num=1);

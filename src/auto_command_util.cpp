@@ -13,11 +13,6 @@ const uint16_t BUTTON_PUSHING_MSEC = 50;
 // 長押し時のLED点滅時間間隔
 const uint16_t LED_INTERVAL = 500;
 
-// 明るさ
-const uint16_t LED_BRIGHTNESS_100 = 50;
-const uint16_t LED_BRIGHTNESS_50 = 25;
-
-
 /**
  * @brief 初期化(全LEDのセットアップ/点灯/初期 B 3連打)
  */
