@@ -18,8 +18,12 @@ const uint16_t LED_INTERVAL = 500;
  */
 void initAutoCommandUtil(){
   // ピンを初期化
-  pinMode(A2, OUTPUT); // BLUE/GREEN Shared GND
-  digitalWrite(A2, LOW);
+  pinMode(LED_RED_GND_PIN, OUTPUT);
+  digitalWrite(LED_RED_GND_PIN, LOW);
+  pinMode(LED_BLUE_GND_PIN, OUTPUT);
+  digitalWrite(LED_BLUE_GND_PIN, LOW);
+  pinMode(LED_GREEN_GND_PIN, OUTPUT);
+  digitalWrite(LED_GREEN_GND_PIN, LOW);
   pinMode(LED_RED_PIN, OUTPUT);
   pinMode(LED_WHITE_PIN, OUTPUT);
   // 全点灯

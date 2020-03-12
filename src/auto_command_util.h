@@ -3,10 +3,13 @@
 #pragma once
 
 // LEDに使うピン
-const uint16_t LED_RED_PIN = 13;
-const uint16_t LED_BLUE_PIN = A1;
-const uint16_t LED_GREEN_PIN = A4;
-const uint16_t LED_WHITE_PIN = 6;
+const uint16_t LED_RED_PIN = 9;
+const uint16_t LED_GREEN_PIN = 6;
+const uint16_t LED_BLUE_PIN = 5;
+const uint16_t LED_WHITE_PIN = 3;
+const uint16_t LED_RED_GND_PIN = 8;
+const uint16_t LED_GREEN_GND_PIN = 7;
+const uint16_t LED_BLUE_GND_PIN = 4;
 
 void initAutoCommandUtil();
 void pushButton(Button button, int delay_after_pushing_msec, int loop_num=1);
