@@ -19,8 +19,11 @@ const uint16_t BTN_IN1_PIN = A0;
 const uint16_t BTN_IN2_PIN = A3;
 
 // Speakerに使うピン
-const uint16_t SPK_GND_PIN = 16;
-const uint16_t SPK_IN_PIN = 10;
+const uint16_t SPK_GND_PIN = A1;
+const uint16_t SPK_IN_PIN = 15;
+
+// Resetに使うピン
+const uint16_t RESET_PIN = 2;
 
 // mode
 const uint16_t MODE_BITS = 4;
@@ -322,12 +325,40 @@ void moveFromManiaToID()
 
 }
 
+// 通知音
+void notificationSound()
+{
+  tone(SPK_IN_PIN, 1760, 150);
+  delay(200);
+  tone(SPK_IN_PIN, 1760, 150);
+  delay(200);
+  tone(SPK_IN_PIN, 1760, 150);
+}
+
 // 再起動
 void restartApp()
 {
-
+  pushButton(Button::HOME, 700);
+  pushButton(Button::X, 700);
+  pushButton(Button::A, 100, 30);
+  delay(12500);
+  pushButton(Button::A, 100, 10);
+  delay(7000);
 }
 
+// キャンプ
+void inAndOutCamp()
+{
+  pushButton(Button::B, 100, 20);
+  pushButton(Button::X, 700);
+  pushHatButtonContinuous(Hat::LEFT_UP, 1000);
+  pushHatButton(Hat::RIGHT, 500);
+  pushHatButton(Hat::DOWN, 500);
+  pushButton(Button::A, 2000);
+  delay(10000);
+  pushButton(Button::B, 2000);
+  pushButton(Button::A, 2000);
+}
 
 // get button input
 int getButton()
@@ -401,7 +432,11 @@ void setMode()
 }
 
 // reset
-void(* resetFunc) (void) = 0; 
+// void(* resetFunc) (void) = 0;
+void resetFunc(){
+  digitalWrite(RESET_PIN, LOW);
+  pinMode(RESET_PIN, OUTPUT);
+}
 
 void setup()
 {
@@ -459,46 +494,17 @@ void setup()
       }
       ID2();
       break;
-    case 11:
-      while (true) {
-        pushButton(Button::A, 1000);
-        execWattGainSequence();
-        execWattGainSequence();
-        execWattGainSequence();
-        tone(SPK_IN_PIN, 1760, 150);
-        delay(200);
-        tone(SPK_IN_PIN, 1760, 150);
-        delay(200);
-        tone(SPK_IN_PIN, 1760, 150);
-        v1 = getInput(1);
-        if (v1 == 0) {
-          pushButton(Button::HOME, 700);
-          pushButton(Button::X, 700);
-          pushButton(Button::A, 100, 30);
-          delay(12500);
-          pushButton(Button::A, 100, 10);
-          delay(7000);
-        }else{
-          pushButton(Button::B, 100, 20);
-          pushButton(Button::X, 700);
-          pushHatButtonContinuous(Hat::LEFT_UP, 1000);
-          pushHatButton(Hat::RIGHT, 500);
-          pushHatButton(Hat::DOWN, 500);
-          pushButton(Button::A, 2000);
-          delay(10000);
-          pushButton(Button::B, 2000);
-          pushButton(Button::A, 2000);
-          break;
-        }
-      }
+    case 11: // 自動3日目探索
       break;
-    case 12:
+    case 12: // 自動4日目探索
       break;
-    case 13:
+    case 13: // 化石
+      v0 = getInput(2);
+      showNum(v0, 2);
       break;
     case 14:
       break;
-    case 15:
+    case 15: // コントローラーテスト
       break;
     default:
       resetFunc();  //call reset
@@ -539,6 +545,45 @@ void loop()
     case 8:
       delay(120);
       day1day30Multi();
+      break;
+    case 11:
+    case 12:
+      pushButton(Button::A, 1000);
+      for (v0 = 8; v0 < mode; v0++)
+      {
+        execWattGainSequence();
+      }
+      tone(SPK_IN_PIN, 1760, 150);
+      delay(200);
+      tone(SPK_IN_PIN, 1760, 150);
+      delay(200);
+      tone(SPK_IN_PIN, 1760, 150);
+      v1 = getInput(1);
+      if (v1 == 0) {
+        restartApp();
+      }else{
+        inAndOutCamp();
+        resetFunc();
+      }
+      break;
+    case 13:
+      for (v1 = 0; v1 < 30; v1++) {
+        pushButton(Button::A, 100, 7);
+        delay(350);
+        if ((v0 >> 1) % 2 == 1) pushHatButton(Hat::DOWN, 80);
+        pushButton(Button::A, 750, 1);
+        if ((v0 >> 0) % 2 == 1) pushHatButton(Hat::DOWN, 80);
+        pushButton(Button::A, 30, 12);
+        pushButton(Button::B, 30, 155);
+        delay(50);
+      }
+      notificationSound();
+      v1 = getInput(1);
+      if (v1 == 0) {
+        restartApp();
+      }else{
+        resetFunc();
+      }
       break;
     case 15:
       pushButton(Button::A, 500);
