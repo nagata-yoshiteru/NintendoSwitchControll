@@ -10,6 +10,7 @@
 * 5.ボックスが空のこと
 */
 #include <auto_command_util.h>
+#include <switch_controller.h>
 
 const int TIME_TO_HATCHING_SEC = 135;
 
@@ -35,8 +36,29 @@ const int BATTLE_FINISH_SEC = 200;
 // 日付変更用
 int day_count = 1;
 
+// スティック倒し量記憶用
+int lx_per = 0, ly_per = 0, rx_per = 0, ry_per = 0;
+
+String cmds[5] = {"\0"}; // 分割された文字列を格納する配列
+
 // その他，キャッシュ用変数
 int v0 = 0, v1 = 0, v2 = 0, v3 = 0;
+
+
+int split(String data, char delimiter, String *dst){
+    int index = 0;
+    int arraySize = (sizeof(data)/sizeof((data)[0]));  
+    int datalength = data.length();
+    for (int i = 0; i < datalength; i++) {
+        char tmp = data.charAt(i);
+        if ( tmp == delimiter ) {
+            index++;
+            if ( index > (arraySize - 1)) return -1;
+        }
+        else dst[index] += tmp;
+    }
+    return (index + 1);
+}
 
 // 空飛ぶタクシーでハシノマはらっぱに移動
 void moveToInitialPlayerPosition()
@@ -372,6 +394,7 @@ int getButton()
 int getInput(int inputBits)
 {
   int in = 0, b = 0, k = 1;
+  if (cmds[0] == "MODE_INPUT") return cmds[2].toInt();
   pinMode(BTN_VCC_PIN, OUTPUT);
   digitalWrite(BTN_VCC_PIN, LOW);
   pinMode(BTN_IN1_PIN, INPUT_PULLUP);
@@ -380,6 +403,12 @@ int getInput(int inputBits)
   {
     int j = -1;
     while ((j = getButton()) == -1){
+      if (Serial1.available() > 0) {
+        String serialStr = Serial1.readStringUntil('\n');
+        split(serialStr, ',', cmds);
+        if (cmds[0] == "MODE_INPUT") return cmds[1].toInt();
+        else return 14; // 外部コントロール
+      }
       delay(8);
       if (b >= LED_BRIGHTNESS_100) k = -1;
       if (b <= 0) k = 1;
@@ -407,6 +436,7 @@ int getInput(int inputBits)
 // show num
 void showNum(int num, int outputBits)
 {
+  if (outputBits > 4 && cmds[0] == "MODE_INPUT") outputBits += 4;
   delay(100);
   whiteLED(LED_BRIGHTNESS_50);
   delay(100);
@@ -444,6 +474,7 @@ void setup()
   pinMode(SPK_GND_PIN, OUTPUT);
   digitalWrite(SPK_GND_PIN, LOW);
   tone(SPK_IN_PIN, 880, 200);
+  Serial1.begin(9600);
   setMode();
   pushButton(Button::B, 200, 3);
   delay(400);
@@ -502,7 +533,8 @@ void setup()
       v0 = getInput(2);
       showNum(v0, 2);
       break;
-    case 14:
+    case 14: // 外部コントロール
+      String serialStr = Serial1.readStringUntil('\n');
       break;
     case 15: // コントローラーテスト
       break;
@@ -583,6 +615,74 @@ void loop()
         restartApp();
       }else{
         resetFunc();
+      }
+      break;
+    case 14:
+      // データを受信した場合にのみ，データを送信する
+      if (Serial1.available() > 0) {
+        v0 = -1;
+        // 受信したデータの1バイトを読み取る
+        String serialStr = Serial1.readStringUntil('\n');
+        // 受信したデータを出力する
+        Serial1.print(serialStr);
+        if (serialStr == "bY\r") { v0 = 0; v1 = Button::Y; }
+        if (serialStr == "bB\r") { v0 = 0; v1 = Button::B; }
+        if (serialStr == "bA\r") { v0 = 0; v1 = Button::A; }
+        if (serialStr == "bX\r") { v0 = 0; v1 = Button::X; }
+        if (serialStr == "bL\r") { v0 = 0; v1 = Button::L; }
+        if (serialStr == "bR\r") { v0 = 0; v1 = Button::R; }
+        if (serialStr == "bZL\r") { v0 = 0; v1 = Button::ZL; }
+        if (serialStr == "bZR\r") { v0 = 0; v1 = Button::ZR; }
+        if (serialStr == "b-\r") { v0 = 0; v1 = Button::MINUS; }
+        if (serialStr == "b+\r") { v0 = 0; v1 = Button::PLUS; }
+        if (serialStr == "bLC\r") { v0 = 0; v1 = Button::LCLICK; }
+        if (serialStr == "bRC\r") { v0 = 0; v1 = Button::RCLICK; }
+        if (serialStr == "bHOME\r") { v0 = 0; v1 = Button::HOME; }
+        if (serialStr == "bCAP\r") { v0 = 0; v1 = Button::CAPTURE; }
+        if (serialStr == "RX MIN\r") { v0 = 2; rx_per = -100; }
+        if (serialStr == "RX MAX\r") { v0 = 2; rx_per = 100; }
+        if (serialStr == "RY MIN\r") { v0 = 2; ry_per = -100; }
+        if (serialStr == "RY MAX\r") { v0 = 2; ry_per = 100; }
+        if (serialStr == "LX MIN\r") { v0 = 2; lx_per = -100; }
+        if (serialStr == "LX MAX\r") { v0 = 2; lx_per = 100; }
+        if (serialStr == "LY MIN\r") { v0 = 2; ly_per = -100; }
+        if (serialStr == "LY MAX\r") { v0 = 2; ly_per = 100; }
+        if (serialStr == "R bY\r") { v0 = 1; v1 = Button::Y; }
+        if (serialStr == "R bB\r") { v0 = 1; v1 = Button::B; }
+        if (serialStr == "R bA\r") { v0 = 1; v1 = Button::A; }
+        if (serialStr == "R bX\r") { v0 = 1; v1 = Button::X; }
+        if (serialStr == "R bL\r") { v0 = 1; v1 = Button::L; }
+        if (serialStr == "R bR\r") { v0 = 1; v1 = Button::R; }
+        if (serialStr == "R bZL\r") { v0 = 1; v1 = Button::ZL; }
+        if (serialStr == "R bZR\r") { v0 = 1; v1 = Button::ZR; }
+        if (serialStr == "R b-\r") { v0 = 1; v1 = Button::MINUS; }
+        if (serialStr == "R b+\r") { v0 = 1; v1 = Button::PLUS; }
+        if (serialStr == "R bLC\r") { v0 = 1; v1 = Button::LCLICK; }
+        if (serialStr == "R bRC\r") { v0 = 1; v1 = Button::RCLICK; }
+        if (serialStr == "R bHOME\r") { v0 = 1; v1 = Button::HOME; }
+        if (serialStr == "R bCAP\r") { v0 = 1; v1 = Button::CAPTURE; }
+        if (serialStr == "R RX MIN\r") { v0 = 2; rx_per = 0; }
+        if (serialStr == "R RX MAX\r") { v0 = 2; rx_per = 0; }
+        if (serialStr == "R RY MIN\r") { v0 = 2; ry_per = 0; }
+        if (serialStr == "R RY MAX\r") { v0 = 2; ry_per = 0; }
+        if (serialStr == "R LX MIN\r") { v0 = 2; lx_per = 0; }
+        if (serialStr == "R LX MAX\r") { v0 = 2; lx_per = 0; }
+        if (serialStr == "R LY MIN\r") { v0 = 2; ly_per = 0; }
+        if (serialStr == "R LY MAX\r") { v0 = 2; ly_per = 0; }
+        switch (v0)
+        {
+          case 0:
+            SwitchController().pressButton(v1);
+            break;
+          case 1:
+            SwitchController().releaseButton(v1);
+            break;
+          case 2:
+            SwitchController().setStickTiltRatio(lx_per, ly_per, rx_per, ry_per);
+            break;
+          default:
+            break;
+        }
       }
       break;
     case 15:
