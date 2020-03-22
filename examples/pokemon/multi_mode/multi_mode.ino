@@ -39,7 +39,7 @@ int day_count = 1;
 // スティック倒し量記憶用
 int lx_per = 0, ly_per = 0, rx_per = 0, ry_per = 0;
 
-String cmds[5] = {"\0"}; // 分割された文字列を格納する配列
+String cmds[8] = {"\0"}; // 分割された文字列を格納する配列
 
 // その他，キャッシュ用変数
 int v0 = 0, v1 = 0, v2 = 0, v3 = 0;
@@ -49,10 +49,12 @@ int split(String data, char delimiter, String *dst){
     int index = 0;
     int arraySize = (sizeof(data)/sizeof((data)[0]));  
     int datalength = data.length();
+    dst[0] = "\0";
     for (int i = 0; i < datalength; i++) {
         char tmp = data.charAt(i);
         if ( tmp == delimiter ) {
             index++;
+            dst[index] = "\0";
             if ( index > (arraySize - 1)) return -1;
         }
         else dst[index] += tmp;
@@ -623,52 +625,67 @@ void loop()
         v0 = -1;
         // 受信したデータの1バイトを読み取る
         String serialStr = Serial1.readStringUntil('\n');
+        split(serialStr, ',', cmds);
         // 受信したデータを出力する
         Serial1.print(serialStr);
-        if (serialStr == "bY\r") { v0 = 0; v1 = Button::Y; }
-        if (serialStr == "bB\r") { v0 = 0; v1 = Button::B; }
-        if (serialStr == "bA\r") { v0 = 0; v1 = Button::A; }
-        if (serialStr == "bX\r") { v0 = 0; v1 = Button::X; }
-        if (serialStr == "bL\r") { v0 = 0; v1 = Button::L; }
-        if (serialStr == "bR\r") { v0 = 0; v1 = Button::R; }
-        if (serialStr == "bZL\r") { v0 = 0; v1 = Button::ZL; }
-        if (serialStr == "bZR\r") { v0 = 0; v1 = Button::ZR; }
-        if (serialStr == "b-\r") { v0 = 0; v1 = Button::MINUS; }
-        if (serialStr == "b+\r") { v0 = 0; v1 = Button::PLUS; }
-        if (serialStr == "bLC\r") { v0 = 0; v1 = Button::LCLICK; }
-        if (serialStr == "bRC\r") { v0 = 0; v1 = Button::RCLICK; }
-        if (serialStr == "bHOME\r") { v0 = 0; v1 = Button::HOME; }
-        if (serialStr == "bCAP\r") { v0 = 0; v1 = Button::CAPTURE; }
-        if (serialStr == "RX MIN\r") { v0 = 2; rx_per = -100; }
-        if (serialStr == "RX MAX\r") { v0 = 2; rx_per = 100; }
-        if (serialStr == "RY MIN\r") { v0 = 2; ry_per = -100; }
-        if (serialStr == "RY MAX\r") { v0 = 2; ry_per = 100; }
-        if (serialStr == "LX MIN\r") { v0 = 2; lx_per = -100; }
-        if (serialStr == "LX MAX\r") { v0 = 2; lx_per = 100; }
-        if (serialStr == "LY MIN\r") { v0 = 2; ly_per = -100; }
-        if (serialStr == "LY MAX\r") { v0 = 2; ly_per = 100; }
-        if (serialStr == "R bY\r") { v0 = 1; v1 = Button::Y; }
-        if (serialStr == "R bB\r") { v0 = 1; v1 = Button::B; }
-        if (serialStr == "R bA\r") { v0 = 1; v1 = Button::A; }
-        if (serialStr == "R bX\r") { v0 = 1; v1 = Button::X; }
-        if (serialStr == "R bL\r") { v0 = 1; v1 = Button::L; }
-        if (serialStr == "R bR\r") { v0 = 1; v1 = Button::R; }
-        if (serialStr == "R bZL\r") { v0 = 1; v1 = Button::ZL; }
-        if (serialStr == "R bZR\r") { v0 = 1; v1 = Button::ZR; }
-        if (serialStr == "R b-\r") { v0 = 1; v1 = Button::MINUS; }
-        if (serialStr == "R b+\r") { v0 = 1; v1 = Button::PLUS; }
-        if (serialStr == "R bLC\r") { v0 = 1; v1 = Button::LCLICK; }
-        if (serialStr == "R bRC\r") { v0 = 1; v1 = Button::RCLICK; }
-        if (serialStr == "R bHOME\r") { v0 = 1; v1 = Button::HOME; }
-        if (serialStr == "R bCAP\r") { v0 = 1; v1 = Button::CAPTURE; }
-        if (serialStr == "R RX MIN\r") { v0 = 2; rx_per = 0; }
-        if (serialStr == "R RX MAX\r") { v0 = 2; rx_per = 0; }
-        if (serialStr == "R RY MIN\r") { v0 = 2; ry_per = 0; }
-        if (serialStr == "R RY MAX\r") { v0 = 2; ry_per = 0; }
-        if (serialStr == "R LX MIN\r") { v0 = 2; lx_per = 0; }
-        if (serialStr == "R LX MAX\r") { v0 = 2; lx_per = 0; }
-        if (serialStr == "R LY MIN\r") { v0 = 2; ly_per = 0; }
-        if (serialStr == "R LY MAX\r") { v0 = 2; ly_per = 0; }
+        if (cmds[0] == "bY") { v0 = 0; v1 = Button::Y; }
+        if (cmds[0] == "bB") { v0 = 0; v1 = Button::B; }
+        if (cmds[0] == "bA") { v0 = 0; v1 = Button::A; }
+        if (cmds[0] == "bX") { v0 = 0; v1 = Button::X; }
+        if (cmds[0] == "bL") { v0 = 0; v1 = Button::L; }
+        if (cmds[0] == "bR") { v0 = 0; v1 = Button::R; }
+        if (cmds[0] == "bZL") { v0 = 0; v1 = Button::ZL; }
+        if (cmds[0] == "bZR") { v0 = 0; v1 = Button::ZR; }
+        if (cmds[0] == "b-") { v0 = 0; v1 = Button::MINUS; }
+        if (cmds[0] == "b+") { v0 = 0; v1 = Button::PLUS; }
+        if (cmds[0] == "bLC") { v0 = 0; v1 = Button::LCLICK; }
+        if (cmds[0] == "bRC") { v0 = 0; v1 = Button::RCLICK; }
+        if (cmds[0] == "bHOME") { v0 = 0; v1 = Button::HOME; }
+        if (cmds[0] == "bCAP") { v0 = 0; v1 = Button::CAPTURE; }
+        if (cmds[0] == "rxL") { v0 = 2; rx_per = -100; }
+        if (cmds[0] == "rxH") { v0 = 2; rx_per = 100; }
+        if (cmds[0] == "ryL") { v0 = 2; ry_per = -100; }
+        if (cmds[0] == "ryH") { v0 = 2; ry_per = 100; }
+        if (cmds[0] == "lxL") { v0 = 2; lx_per = -100; }
+        if (cmds[0] == "lxH") { v0 = 2; lx_per = 100; }
+        if (cmds[0] == "lyL") { v0 = 2; ly_per = -100; }
+        if (cmds[0] == "lyH") { v0 = 2; ly_per = 100; }
+        if (cmds[0] == "RbY") { v0 = 1; v1 = Button::Y; }
+        if (cmds[0] == "RbB") { v0 = 1; v1 = Button::B; }
+        if (cmds[0] == "RbA") { v0 = 1; v1 = Button::A; }
+        if (cmds[0] == "RbX") { v0 = 1; v1 = Button::X; }
+        if (cmds[0] == "RbL") { v0 = 1; v1 = Button::L; }
+        if (cmds[0] == "RbR") { v0 = 1; v1 = Button::R; }
+        if (cmds[0] == "RbZL") { v0 = 1; v1 = Button::ZL; }
+        if (cmds[0] == "RbZR") { v0 = 1; v1 = Button::ZR; }
+        if (cmds[0] == "Rb-") { v0 = 1; v1 = Button::MINUS; }
+        if (cmds[0] == "Rb+") { v0 = 1; v1 = Button::PLUS; }
+        if (cmds[0] == "RbLC") { v0 = 1; v1 = Button::LCLICK; }
+        if (cmds[0] == "RbRC") { v0 = 1; v1 = Button::RCLICK; }
+        if (cmds[0] == "RbHOME") { v0 = 1; v1 = Button::HOME; }
+        if (cmds[0] == "RbCAP") { v0 = 1; v1 = Button::CAPTURE; }
+        if (cmds[0] == "RrxL") { v0 = 2; rx_per = 0; }
+        if (cmds[0] == "RrxH") { v0 = 2; rx_per = 0; }
+        if (cmds[0] == "RryL") { v0 = 2; ry_per = 0; }
+        if (cmds[0] == "RryH") { v0 = 2; ry_per = 0; }
+        if (cmds[0] == "RlxL") { v0 = 2; lx_per = 0; }
+        if (cmds[0] == "RlxH") { v0 = 2; lx_per = 0; }
+        if (cmds[0] == "RlyL") { v0 = 2; ly_per = 0; }
+        if (cmds[0] == "RlyH") { v0 = 2; ly_per = 0; }
+        if (cmds[0] == "til") {
+          v0 = 2;
+          lx_per = cmds[1].toInt();
+          ly_per = cmds[2].toInt();
+          rx_per = cmds[3].toInt();
+          ry_per = cmds[4].toInt();
+        }
+        if (cmds[0] == "Rtil") {
+          v0 = 2;
+          lx_per = 0;
+          ly_per = 0;
+          rx_per = 0;
+          ry_per = 0;
+        }
         switch (v0)
         {
           case 0:
