@@ -311,7 +311,7 @@ void ID2()
 void execWattGainSequence()
 {
     // 募集開始
-    pushButton(Button::A, 3000);
+    pushButton(Button::A, 2800);
     // 日付変更
     goToTimeSetting();
     day1day30();
@@ -593,11 +593,25 @@ void loop()
       delay(200);
       tone(SPK_IN_PIN, 1760, 150);
       v1 = getInput(1);
-      if (v1 == 0) {
-        restartApp();
-      }else{
-        inAndOutCamp();
-        resetFunc();
+      restartApp();
+      if (v1 == 1) {
+        pushButton(Button::A, 1000);
+        execWattGainSequence();
+        pushButton(Button::B, 30, 2);
+        delay(1000);
+        pushButton(Button::X, 1000);
+        pushButton(Button::R, 1000);
+        tone(SPK_IN_PIN, 1760, 150);
+        delay(200);
+        tone(SPK_IN_PIN, 880, 150);
+        delay(200);
+        tone(SPK_IN_PIN, 440, 150);
+        v1 = getInput(1);
+        if(v1 == 1) {
+          pushButton(Button::A, 3000);
+        }else{
+          resetFunc();
+        }
       }
       break;
     case 13:
