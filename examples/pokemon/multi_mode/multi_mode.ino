@@ -262,31 +262,31 @@ void ID()
 
 void day1day30()
 {
-  pushButton(Button::A, 85);
-  pushHatButton(Hat::RIGHT, 30, 2);
-  pushHatButton(Hat::UP, 30);
-  pushHatButton(Hat::RIGHT, 30, 3);
-  pushButton(Button::A, 30);
+  pushButton(Button::A, 70);
+  pushHatButton(Hat::RIGHT, 26, 2);
+  pushHatButton(Hat::UP, 26);
+  pushHatButton(Hat::RIGHT, 26, 3);
+  pushButton(Button::A, 26);
 }
 
 void day1day30Multi()
 {
-  pushButton(Button::A, 85);
-  pushHatButton(Hat::LEFT, 30, 3);
-  pushHatButton(Hat::UP, 30);
-  pushHatButton(Hat::RIGHT, 30, 3);
-  pushButton(Button::A, 30);
+  pushButton(Button::A, 70);
+  pushHatButton(Hat::LEFT, 26, 3);
+  pushHatButton(Hat::UP, 26);
+  pushHatButton(Hat::RIGHT, 26, 3);
+  pushButton(Button::A, 26);
 }
 
 void day31day1()
 {
   day1day30();
   delay(200);
-  pushButton(Button::A, 85);
-  pushHatButton(Hat::LEFT, 30, 3);
-  pushHatButton(Hat::UP, 30);
-  pushHatButton(Hat::RIGHT, 30, 3);
-  pushButton(Button::A, 30);
+  pushButton(Button::A, 70);
+  pushHatButton(Hat::LEFT, 26, 3);
+  pushHatButton(Hat::UP, 26);
+  pushHatButton(Hat::RIGHT, 26, 3);
+  pushButton(Button::A, 26);
 }
 
 int changeDate()
@@ -577,7 +577,7 @@ void loop()
       break;
     case 7:
     case 8:
-      delay(100);
+      delay(70);
       day1day30Multi();
       break;
     case 11:
