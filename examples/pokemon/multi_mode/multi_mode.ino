@@ -262,7 +262,7 @@ void ID()
 
 void day1day30()
 {
-  pushButton(Button::A, 100);
+  pushButton(Button::A, 85);
   pushHatButton(Hat::RIGHT, 30, 2);
   pushHatButton(Hat::UP, 30);
   pushHatButton(Hat::RIGHT, 30, 3);
@@ -271,7 +271,7 @@ void day1day30()
 
 void day1day30Multi()
 {
-  pushButton(Button::A, 100);
+  pushButton(Button::A, 85);
   pushHatButton(Hat::LEFT, 30, 3);
   pushHatButton(Hat::UP, 30);
   pushHatButton(Hat::RIGHT, 30, 3);
@@ -282,7 +282,7 @@ void day31day1()
 {
   day1day30();
   delay(200);
-  pushButton(Button::A, 100);
+  pushButton(Button::A, 85);
   pushHatButton(Hat::LEFT, 30, 3);
   pushHatButton(Hat::UP, 30);
   pushHatButton(Hat::RIGHT, 30, 3);
@@ -577,7 +577,7 @@ void loop()
       break;
     case 7:
     case 8:
-      delay(120);
+      delay(100);
       day1day30Multi();
       break;
     case 11:
