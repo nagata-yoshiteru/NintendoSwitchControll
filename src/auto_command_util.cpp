@@ -8,7 +8,7 @@
 #include "auto_command_util.h"
 
 // ボタンを押してから離すまでの時間
-const uint16_t BUTTON_PUSHING_MSEC = 46;
+const uint16_t BUTTON_PUSHING_MSEC = 44;
 
 // 長押し時のLED点滅時間間隔
 const uint16_t LED_INTERVAL = 500;
