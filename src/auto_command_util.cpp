@@ -7,9 +7,6 @@
  */
 #include "auto_command_util.h"
 
-// ボタンを押してから離すまでの時間
-const uint16_t BUTTON_PUSHING_MSEC = 44;
-
 // 長押し時のLED点滅時間間隔
 const uint16_t LED_INTERVAL = 500;
 
@@ -126,7 +123,7 @@ void stickLED(int l, int r, int control)
  * @param delay_after_pushing_msec ボタンを押し終えた後の待ち時間 
  * @param loop_num ボタンを押す回数
  */
-void pushButton(Button button, int delay_after_pushing_msec, int loop_num, int pushing_msec)
+void pushButton(Button button, int delay_after_pushing_msec, int loop_num, int pushing_msec, int finish_waiting_msec)
 {
     for(int i=0; i<loop_num; i++)
     {
@@ -137,7 +134,7 @@ void pushButton(Button button, int delay_after_pushing_msec, int loop_num, int p
         buttonLED(button, 0);
         delay(delay_after_pushing_msec);
     }
-    delay(BUTTON_PUSHING_MSEC);
+    delay(finish_waiting_msec);
 }
 
 /**
@@ -147,18 +144,18 @@ void pushButton(Button button, int delay_after_pushing_msec, int loop_num, int p
  * @param delay_after_pushing_msec ボタンを押し終えた後の待ち時間 
  * @param loop_num ボタンを押す回数
  */
-void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num)
+void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num, int pushing_msec, int finish_waiting_msec)
 {
     for(int i=0;i<loop_num;i++)
     {
         hatLED(button, 1);
         SwitchController().pressHatButton(button);
-        delay(BUTTON_PUSHING_MSEC);
+        delay(pushing_msec);
         SwitchController().releaseHatButton();
         hatLED(button, 0);
         delay(delay_after_pushing_msec);
     }
-    delay(BUTTON_PUSHING_MSEC);
+    delay(finish_waiting_msec);
 }
 
 /**

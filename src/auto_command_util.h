@@ -15,9 +15,12 @@ const uint16_t LED_BLUE_GND_PIN = 4;
 const uint16_t LED_BRIGHTNESS_100 = 15;
 const uint16_t LED_BRIGHTNESS_50 = 7;
 
+// ボタンを押してから離すまでの時間
+const uint16_t BUTTON_PUSHING_MSEC = 45;
+
 void initAutoCommandUtil();
-void pushButton(Button button, int delay_after_pushing_msec, int loop_num=1, int pushing_msec=45);
-void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num=1);
+void pushButton(Button button, int delay_after_pushing_msec, int loop_num=1, int pushing_msec=BUTTON_PUSHING_MSEC, int finish_waiting_msec=BUTTON_PUSHING_MSEC);
+void pushHatButton(Hat button, int delay_after_pushing_msec, int loop_num=1, int pushing_msec=BUTTON_PUSHING_MSEC, int finish_waiting_msec=BUTTON_PUSHING_MSEC);
 void pushHatButtonContinuous(Hat button, int pushing_time_msec);
 void tiltJoystick(int lx_per, int ly_per, int rx_per, int ry_per, int tilt_time_msec);
 void redLED(int brightness);
