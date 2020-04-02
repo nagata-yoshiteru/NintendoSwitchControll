@@ -126,13 +126,13 @@ void stickLED(int l, int r, int control)
  * @param delay_after_pushing_msec ボタンを押し終えた後の待ち時間 
  * @param loop_num ボタンを押す回数
  */
-void pushButton(Button button, int delay_after_pushing_msec, int loop_num)
+void pushButton(Button button, int delay_after_pushing_msec, int loop_num, int pushing_msec)
 {
     for(int i=0; i<loop_num; i++)
     {
         buttonLED(button, 1);
         SwitchController().pressButton(button);
-        delay(BUTTON_PUSHING_MSEC);
+        delay(pushing_msec);
         SwitchController().releaseButton(button);
         buttonLED(button, 0);
         delay(delay_after_pushing_msec);
