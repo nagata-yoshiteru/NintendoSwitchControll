@@ -106,7 +106,7 @@ void waitEggHatching()
 
 // 孵化した手持ちのポケモンをボックスに預ける
 // box_line : 何列目にポケモンを預けるか
-void sendHatchedPoemonToBox(int box_line)
+void sendPokemonToBox(int box_line)
 {
   // ボックスを開く
   pushButton(Button::X, 1000);
@@ -164,7 +164,7 @@ void execHatchingSequence()
   for (int box_line = 0; box_line < 6; box_line++)
   {
     reciveAndHatchEggs();
-    sendHatchedPoemonToBox(box_line);
+    sendPokemonToBox(box_line);
   }
   moveToNextBox();
 }
@@ -190,31 +190,6 @@ void resetStateRaidBattle(){
     pushButton(Button::B, 1000, 3);
 }
 
-// 捕獲した手持ちのポケモンをボックスに預ける
-// box_line : 何列目にポケモンを預けるか
-void sendCapturePokemonToBox(int box_line)
-{
-    // ボックスを開く
-    pushButton(Button::X, 1000);
-    pushHatButtonContinuous(Hat::LEFT_UP, 1000);
-    pushHatButton(Hat::RIGHT, 500);
-    pushButton(Button::A, 2000);
-    pushButton(Button::R, 2000);
-    // 手持ちの捕獲したポケモンを範囲選択
-    pushHatButton(Hat::LEFT, 500);
-    pushHatButton(Hat::DOWN, 500);
-    pushButton(Button::Y, 500, 2);
-    pushButton(Button::A, 500);
-    pushHatButtonContinuous(Hat::DOWN, 2000);
-    pushButton(Button::A, 500);
-    // ボックスに移動させる
-    pushHatButton(Hat::RIGHT, 500, box_line+1);
-    pushHatButton(Hat::UP, 500);
-    pushButton(Button::A, 500);
-    // ボックスを閉じる
-    pushButton(Button::B, 1500, 3);
-}
-
 // レイドバトルをし、ポケモンを捕まえ、ボックスに預けるを繰り返し、
 // ボックスが一杯になったら次のボックスへ移動する
 void execRaidBattleSequence(){
@@ -225,7 +200,7 @@ void execRaidBattleSequence(){
             resetStateRaidBattle();
         }
         // 捕まえたポケモンを全て預ける
-        sendCapturePokemonToBox(send_line);
+        sendPokemonToBox(send_line);
     }
     // ボックスが一杯になったところでボックスを移動する
     moveToNextBox();
@@ -253,8 +228,8 @@ void ID()
   //ロトミ起動 > IDくじ
   pushButton(Button::A, 300, 2);
   pushHatButton(Hat::DOWN, 150);
-  pushButton(Button::A, 30, 40);
-  pushButton(Button::B, 30, 125);
+  pushButton(Button::A, 35, 40);
+  pushButton(Button::B, 35, 125);
   // ホーム画面 > 現在の日付と時刻
   goToTimeSetting();
 }
@@ -262,31 +237,31 @@ void ID()
 
 void day1day30()
 {
-  pushButton(Button::A, 70);
-  pushHatButton(Hat::RIGHT, 26, 2);
-  pushHatButton(Hat::UP, 26);
-  pushHatButton(Hat::RIGHT, 26, 3);
-  pushButton(Button::A, 26);
+  pushButton(Button::A, 64);
+  pushHatButton(Hat::RIGHT, 24, 2);
+  pushHatButton(Hat::UP, 24);
+  pushHatButton(Hat::RIGHT, 24, 3);
+  pushButton(Button::A, 24);
 }
 
 void day1day30Multi()
 {
-  pushButton(Button::A, 70);
-  pushHatButton(Hat::LEFT, 26, 3);
-  pushHatButton(Hat::UP, 26);
-  pushHatButton(Hat::RIGHT, 26, 3);
-  pushButton(Button::A, 26);
+  pushButton(Button::A, 64);
+  pushHatButton(Hat::LEFT, 24, 3);
+  pushHatButton(Hat::UP, 24);
+  pushHatButton(Hat::RIGHT, 24, 3);
+  pushButton(Button::A, 24);
 }
 
 void day31day1()
 {
   day1day30();
   delay(200);
-  pushButton(Button::A, 70);
-  pushHatButton(Hat::LEFT, 26, 3);
-  pushHatButton(Hat::UP, 26);
-  pushHatButton(Hat::RIGHT, 26, 3);
-  pushButton(Button::A, 26);
+  pushButton(Button::A, 64);
+  pushHatButton(Hat::LEFT, 24, 3);
+  pushHatButton(Hat::UP, 24);
+  pushHatButton(Hat::RIGHT, 24, 3);
+  pushButton(Button::A, 24);
 }
 
 int changeDate()
@@ -577,7 +552,7 @@ void loop()
       break;
     case 7:
     case 8:
-      delay(70);
+      delay(50);
       day1day30Multi();
       break;
     case 11:
@@ -621,9 +596,9 @@ void loop()
         if ((v0 >> 1) % 2 == 1) pushHatButton(Hat::DOWN, 80);
         pushButton(Button::A, 750, 1);
         if ((v0 >> 0) % 2 == 1) pushHatButton(Hat::DOWN, 80);
-        pushButton(Button::A, 30, 12);
-        pushButton(Button::B, 30, 155);
-        delay(50);
+        pushButton(Button::A, 35, 12);
+        pushButton(Button::B, 35, 156);
+        delay(60);
       }
       notificationSound();
       v1 = getInput(1);
