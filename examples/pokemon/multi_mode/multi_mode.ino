@@ -434,8 +434,7 @@ void showNum(int num, int outputBits)
 // mode select
 void setMode()
 {
-  mode = getInput(MODE_BITS);
-  showNum(mode, MODE_BITS);
+  mode = 7;
 }
 
 // reset
