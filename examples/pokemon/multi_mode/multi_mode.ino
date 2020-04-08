@@ -497,7 +497,7 @@ void setup()
       goToTimeSetting();
       day1day30();
       for (v1 = 1; v1 < v0; v1++) {
-        delay(150);
+        delay(50);
         day1day30Multi();
       }
       ID2();
